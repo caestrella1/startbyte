@@ -18,9 +18,10 @@ export default function App() {
   return (
     <div className="font-sans text-neutral-900 dark:text-neutral-100 min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
       <Background />
-      <div className="container w-1/2 mx-auto text-center p-8 rounded-3xl shadow-lg backdrop-blur-xl
+      <div className={`container w-1/2 mx-auto text-center p-8 rounded-3xl shadow-lg backdrop-blur-xl
         bg-white/70 dark:bg-neutral-900/30 
-        border border-neutral-500 dark:border-white/10">
+        border border-neutral-500 dark:border-white/10
+        animate-spring-in`}>
         <h1 className="mb-4 text-4xl font-bold tracking-wide">{getGreeting()}, Carlos</h1>
         <Weather />
         <SearchBar />

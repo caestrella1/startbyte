@@ -1,39 +1,71 @@
-import React from 'react';
-
-const searchProviders = {
-  duckduckgo: {
-    name: 'DuckDuckGo',
-    action: 'https://duckduckgo.com/',
-    favicon: 'https://duckduckgo.com/favicon.ico'
-  },
-  google: {
-    name: 'Google',
-    action: 'https://www.google.com/search',
-    favicon: 'https://www.google.com/favicon.ico'
-  },
-  bing: {
-    name: 'Bing',
-    action: 'https://www.bing.com/search',
-    favicon: 'https://www.bing.com/favicon.ico'
-  }
-};
-
-export { searchProviders };
+import React, { useState, useRef, useEffect } from 'react';
+import Dropdown, { DropdownItem } from './ui/Dropdown';
+import { searchProviders, getProviderInfo } from '../utils/searchProviders';
 
 export default function SearchProviderPicker({ provider, showProviders, onToggle, onChange }) {
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const buttonRef = useRef(null);
+  const currentProvider = getProviderInfo(provider);
+
+  useEffect(() => {
+    if (!showProviders) {
+      setSelectedIndex(-1);
+    }
+  }, [showProviders]);
+
+  const handleKeyDown = (e) => {
+    if (!showProviders && e.key === 'Enter') {
+      onToggle();
+      return;
+    }
+
+    if (showProviders) {
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setSelectedIndex(prev => 
+            prev < Object.entries(searchProviders).length - 1 ? prev + 1 : prev
+          );
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setSelectedIndex(prev => prev > 0 ? prev - 1 : prev);
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (selectedIndex >= 0) {
+            onChange(Object.entries(searchProviders)[selectedIndex][0]);
+            onToggle();
+            buttonRef.current?.focus();
+          }
+          break;
+        case 'Escape':
+          e.preventDefault();
+          onToggle();
+          buttonRef.current?.focus();
+          break;
+      }
+    }
+  };
+
   return (
     <>
       <button
+        ref={buttonRef}
         type="button"
         onClick={onToggle}
+        onKeyDown={handleKeyDown}
+        aria-haspopup="listbox"
+        aria-expanded={showProviders}
+        aria-label={`Search using ${currentProvider.name}`}
         className="absolute left-2 top-1/2 -translate-y-1/2 w-12 h-8 p-1 rounded-full
         flex items-center gap-1
         dark:hover:bg-neutral-600/60
-        focus:outline-none group"
+        focus:outline-none focus:ring-2 focus:ring-blue-400 group"
       >
         <img 
-          src={searchProviders[provider].favicon}
-          alt={searchProviders[provider].name}
+          src={currentProvider.favicon}
+          alt={currentProvider.name}
           className="w-5 h-5"
         />
         <svg 
@@ -47,18 +79,21 @@ export default function SearchProviderPicker({ provider, showProviders, onToggle
       </button>
 
       {showProviders && (
-        <ul className="absolute left-0 top-full mt-2 py-2 bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 z-50">
-          {Object.entries(searchProviders).map(([key, { name, favicon }]) => (
-            <li
+        <Dropdown className="left-0 right-auto w-48" role="listbox">
+          {Object.entries(searchProviders).map(([key, info], index) => (
+            <DropdownItem
               key={key}
-              className="px-4 py-2 cursor-pointer flex items-center gap-2 hover:bg-neutral-50 dark:hover:bg-neutral-700/50"
               onClick={() => onChange(key)}
+              selected={index === selectedIndex}
+              role="option"
+              aria-selected={index === selectedIndex}
+              className="flex items-center gap-2"
             >
-              <img src={favicon} alt={name} className="w-4 h-4" />
-              {name}
-            </li>
+              <img src={info.favicon} alt="" className="w-4 h-4" />
+              {info.name}
+            </DropdownItem>
           ))}
-        </ul>
+        </Dropdown>
       )}
     </>
   );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import SearchProviderPicker, { searchProviders } from './SearchProviderPicker';
+import SearchProviderPicker from './SearchProviderPicker';
+import { searchProviders } from '../utils/searchProviders';
 import Suggestions from './Suggestions';
 
 export default function SearchBar() {
@@ -13,9 +14,8 @@ export default function SearchBar() {
   const timeoutRef = useRef(null);
 
   const autocompleteCallback = (data) => {
-    if (Array.isArray(data)) {
-      setSuggestions(data[1]);
-    }
+    const suggestions = searchProviders[provider].autocomplete.transform(data);
+    setSuggestions(suggestions);
   };
 
   // Setup stable callback
@@ -31,14 +31,15 @@ export default function SearchBar() {
   }, []);
 
   const fetchSuggestions = (value) => {
-    const existingScript = document.getElementById('duckduckgo-jsonp');
+    const existingScript = document.getElementById('search-suggestions');
     if (existingScript) {
       document.body.removeChild(existingScript);
     }
 
+    const providerConfig = searchProviders[provider].autocomplete;
     const script = document.createElement('script');
-    script.id = 'duckduckgo-jsonp';
-    script.src = `https://ac.duckduckgo.com/ac/?q=${encodeURIComponent(value)}&type=list&callback=autocompleteCallback`;
+    script.id = 'search-suggestions';
+    script.src = `${providerConfig.url}${providerConfig.params(value)}&callback=${providerConfig.callback}`;
     document.body.appendChild(script);
   };
 
@@ -72,7 +73,8 @@ export default function SearchBar() {
     } else if (e.key === 'Enter' && selectedIndex > -1) {
       e.preventDefault();
       const selectedSuggestion = suggestions[selectedIndex];
-      window.location.href = `https://duckduckgo.com/?q=${encodeURIComponent(selectedSuggestion)}`;
+      const searchUrl = `${searchProviders[provider].action}?q=${encodeURIComponent(selectedSuggestion)}`;
+      window.location.href = searchUrl;
       setSuggestions([]);
     } else if (e.key === 'Escape') {
       setSuggestions([]);
@@ -91,6 +93,11 @@ export default function SearchBar() {
     if (savedProvider && searchProviders[savedProvider]) {
       setProvider(savedProvider);
     }
+  }, []);
+
+  // Add effect to focus input on mount
+  useEffect(() => {
+    inputRef.current?.focus();
   }, []);
 
   return (

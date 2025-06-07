@@ -1,3 +1,6 @@
+@utility grid-rows-auto {
+  grid-template-rows: 1fr;
+}
 
 @utility sortable-link {
   @apply no-underline px-4 py-1.5 rounded-xl shadow transition flex items-center gap-2 relative
@@ -34,12 +37,12 @@
 }
 
 @utility input {
-  @apply w-full px-3 py-2 transition
-    border border-neutral-400/40 dark:border-neutral-600 dark:hover:border-neutral-400 rounded-lg
+  @apply w-full px-3 py-2 transition-all duration-400
+    border border-neutral-400/40 dark:border-neutral-600 rounded-lg
     bg-neutral-400/60 hover:bg-neutral-400 dark:bg-neutral-700/40 dark:hover:bg-neutral-600/40 
     text-base text-neutral-900 dark:text-neutral-100
     placeholder:text-black/40 dark:placeholder:text-neutral-400/60
-    focus:outline-none focus:ring-2 focus:ring-blue-400;
+    focus:outline-none focus:ring-2 focus:ring-blue-400/60;
 }
 
 @utility input--search {

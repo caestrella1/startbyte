@@ -30,8 +30,9 @@ export default function Modal({ isOpen, onClose, children }) {
       onClick={startClosing}
     >
       <div 
-        className={`modal__container animate__animated animate__fast
-          ${isClosing ? 'animate__bounceOut' : 'animate__bounceIn'}`}
+        className={`modal__container ${
+          isClosing ? 'animate-spring-out' : 'animate-spring-in'
+        }`}
         onClick={e => e.stopPropagation()}
         onAnimationEnd={finishClosing}
       >

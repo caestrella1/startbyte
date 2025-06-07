@@ -26,6 +26,8 @@ export default function LinksSection({ isEditing }) {
   const [styleType, setStyleType] = useState(() => {
     return localStorage.getItem('linkStyle') || 'pill';
   });
+  const linksContainerRef = useRef(null);
+  const [containerHeight, setContainerHeight] = useState('auto');
 
   const sensors = useSensors(
     useSensor(PointerSensor)
@@ -37,6 +39,13 @@ export default function LinksSection({ isEditing }) {
 
   useEffect(() => {
     localStorage.setItem('linkStyle', styleType);
+  }, [styleType]);
+
+  // Add effect to measure height when style changes
+  useEffect(() => {
+    if (linksContainerRef.current) {
+      setContainerHeight(`${linksContainerRef.current.scrollHeight}px`);
+    }
   }, [styleType]);
 
   const handleDragEnd = (event) => {
@@ -71,27 +80,35 @@ export default function LinksSection({ isEditing }) {
 
   return (
     <>
-      {isEditing && (
-        <SegmentedControl
-          className="mt-4"
-          options={linkStyles}
-          value={styleType}
-          onChange={setStyleType}
-        />
-      )}
+      <div className="grid">
+        <div className={`grid transition-[grid-template-rows] duration-300 ${
+          isEditing ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+        }`}>
+          <div className="overflow-hidden">
+            <SegmentedControl
+              className="mt-4"
+              options={linkStyles}
+              value={styleType}
+              onChange={setStyleType}
+            />
+          </div>
+        </div>
+      </div>
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <div className="links mt-8 flex flex-wrap gap-4 justify-center">
-          <SortableContext items={links.map(link => link.href)}>
-            {links.map(link => (
-              <SortableLink 
-                key={link.href}
-                link={link}
-                isEditing={isEditing}
-                styleType={styleType}
-                onEdit={onEditLink}
-              />
-            ))}
-          </SortableContext>
+        <div className="transition-[height] duration-300 ease-spring" style={{ height: containerHeight }}>
+          <div ref={linksContainerRef} className="links mt-8 flex flex-wrap gap-4 justify-center">
+            <SortableContext items={links.map(link => link.href)}>
+              {links.map(link => (
+                <SortableLink 
+                  key={link.href}
+                  link={link}
+                  isEditing={isEditing}
+                  styleType={styleType}
+                  onEdit={onEditLink}
+                />
+              ))}
+            </SortableContext>
+          </div>
         </div>
       </DndContext>
       {isEditing && (

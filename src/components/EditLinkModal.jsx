@@ -124,7 +124,7 @@ export default function EditLinkModal({ isOpen, link, onClose, onSave, onDelete 
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
-            <div className="w-96">
+            <div className="w-full md:w-96">
                 <h2 className="text-lg font-bold mb-4">Edit Link</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="">
