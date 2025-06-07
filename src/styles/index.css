@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "./utilities";
+@import "./components";
+@import "animate.css";
+
+@theme {
+  --animate-wiggle: wiggle 0.4s ease-in-out infinite;
+  --animate-pop: bounce__in 1s;
+
+  @keyframes wiggle {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-2deg); }
+    100% { transform: rotate(0deg); }
+  }
+}

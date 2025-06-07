@@ -1,0 +1,3 @@
+@utility is-editing {
+  @apply cursor-move animate-wiggle;
+}
