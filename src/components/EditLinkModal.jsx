@@ -23,7 +23,26 @@ export default function EditLinkModal({ isOpen, link, onClose, onSave, onDelete 
         setLabel(link.label);
         setHref(link.href);
         setIcon(link.icon);
-        setIconType(link.icon ? 'url' : 'none');
+        
+        // Detect if the icon is a favicon
+        if (!link.icon) {
+            setIconType('none');
+        } else if (link.href) {
+            try {
+                const origin = new URL(link.href).origin;
+                const faviconUrl = `${origin}/favicon.ico`;
+                if (link.icon === faviconUrl) {
+                    setIconType('favicon');
+                } else {
+                    setIconType('url');
+                }
+            } catch (err) {
+                // If href is invalid, default to url
+                setIconType('url');
+            }
+        } else {
+            setIconType('url');
+        }
     }, [link]);
 
     const handleDrag = useCallback((e) => {
@@ -98,7 +117,21 @@ export default function EditLinkModal({ isOpen, link, onClose, onSave, onDelete 
     const renderIconInput = () => {
         switch (iconType) {
             case 'favicon':
-                return null;
+                return (
+                    <RenderedIcon
+                        iconType={iconType}
+                        icon={icon}
+                        href={href}
+                        label={label}
+                        isDragging={isDragging}
+                        iconError={iconError}
+                        onDrag={handleDrag}
+                        onDrop={handleDrop}
+                        onPaste={handlePaste}
+                        onIconUpdate={handleIconUpdate}
+                        onDragStateChange={setIsDragging}
+                    />
+                );
             case 'none':
                 return null;
             case 'image':
@@ -115,6 +148,7 @@ export default function EditLinkModal({ isOpen, link, onClose, onSave, onDelete 
                         onDrop={handleDrop}
                         onPaste={handlePaste}
                         onIconUpdate={handleIconUpdate}
+                        onDragStateChange={setIsDragging}
                     />
                 );
             default:
@@ -136,7 +170,9 @@ export default function EditLinkModal({ isOpen, link, onClose, onSave, onDelete 
                                     value={iconType}
                                     onChange={setIconType}
                                 />
-                                {renderIconInput()}
+                                <div className={`pt-5 ${iconType === 'url' ? 'w-full' : ''}`}>
+                                    {renderIconInput()}
+                                </div>
                             </div>
                         </div>
                         <div className="mb-4">

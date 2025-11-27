@@ -35,4 +35,15 @@
 
 @utility is-editing {
   @apply cursor-move;
+  animation: var(--animate-wiggle);
+}
+
+.is-editing {
+  animation: var(--animate-wiggle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-editing {
+    animation: none;
+  }
 }

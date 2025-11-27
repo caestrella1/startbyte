@@ -41,12 +41,36 @@ export default function LinksSection({ isEditing }) {
     localStorage.setItem('linkStyle', styleType);
   }, [styleType]);
 
-  // Add effect to measure height when style changes
+  // Add effect to measure height when style, links, or isEditing changes
   useEffect(() => {
+    const updateHeight = () => {
+      if (linksContainerRef.current) {
+        setContainerHeight(`${linksContainerRef.current.scrollHeight}px`);
+      }
+    };
+    
+    // Use ResizeObserver for more reliable height updates
+    let resizeObserver;
     if (linksContainerRef.current) {
-      setContainerHeight(`${linksContainerRef.current.scrollHeight}px`);
+      resizeObserver = new ResizeObserver(() => {
+        updateHeight();
+      });
+      resizeObserver.observe(linksContainerRef.current);
     }
-  }, [styleType]);
+    
+    // Initial update
+    updateHeight();
+    
+    // Also update on window resize as fallback
+    window.addEventListener('resize', updateHeight);
+    
+    return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+      window.removeEventListener('resize', updateHeight);
+    };
+  }, [styleType, links, isEditing]);
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -95,8 +119,8 @@ export default function LinksSection({ isEditing }) {
         </div>
       </div>
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <div className="transition-[height] duration-300 ease-spring" style={{ height: containerHeight }}>
-          <div ref={linksContainerRef} className="links mt-8 flex flex-wrap gap-4 justify-center">
+        <div className="transition-[height] duration-300 ease-spring min-w-0 w-full" style={{ height: containerHeight }}>
+          <div ref={linksContainerRef} className="links mt-8 flex flex-wrap gap-4 justify-center min-w-0 w-full">
             <SortableContext items={links.map(link => link.href)}>
               {links.map(link => (
                 <SortableLink 

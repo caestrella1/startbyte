@@ -5,6 +5,7 @@ import { searchProviders, getProviderInfo } from '../utils/searchProviders';
 export default function SearchProviderPicker({ provider, showProviders, onToggle, onChange }) {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const buttonRef = useRef(null);
+  const pickerRef = useRef(null);
   const currentProvider = getProviderInfo(provider);
 
   useEffect(() => {
@@ -12,6 +13,24 @@ export default function SearchProviderPicker({ provider, showProviders, onToggle
       setSelectedIndex(-1);
     }
   }, [showProviders]);
+
+  useEffect(() => {
+    if (!showProviders) return;
+
+    const handleClickOutside = (event) => {
+      if (pickerRef.current && !pickerRef.current.contains(event.target)) {
+        onToggle();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [showProviders, onToggle]);
 
   const handleKeyDown = (e) => {
     if (!showProviders && e.key === 'Enter') {
@@ -49,7 +68,7 @@ export default function SearchProviderPicker({ provider, showProviders, onToggle
   };
 
   return (
-    <>
+    <div ref={pickerRef}>
       <button
         ref={buttonRef}
         type="button"
@@ -95,6 +114,6 @@ export default function SearchProviderPicker({ provider, showProviders, onToggle
           ))}
         </Dropdown>
       )}
-    </>
+    </div>
   );
 }

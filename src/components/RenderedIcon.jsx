@@ -10,29 +10,47 @@ export default function RenderedIcon({
   onDrag,
   onDrop,
   onPaste,
-  onIconUpdate
+  onIconUpdate,
+  onDragStateChange
 }) {
   switch (iconType) {
     case 'none':
       return null;
     case 'favicon':
-      return href ? (
-        <img
-          src={`${new URL(href).origin}/favicon.ico`}
-          alt="Favicon preview"
-          className="w-12 h-12 object-contain"
-        />
-      ) : (
-        <span className="text-sm text-neutral-500">
-          Enter URL first
-        </span>
-      );
+      if (!href) {
+        return (
+          <span className="text-sm text-neutral-500">
+            Enter URL first
+          </span>
+        );
+      }
+      try {
+        const domain = new URL(href).hostname;
+        const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+        return (
+          <img
+            src={faviconUrl}
+            alt="Favicon preview"
+            className="w-12 h-12 object-contain"
+            onError={(e) => {
+              // Fallback to direct favicon.ico if Google service fails
+              e.target.src = `${new URL(href).origin}/favicon.ico`;
+            }}
+          />
+        );
+      } catch (err) {
+        return (
+          <span className="text-sm text-neutral-500">
+            Invalid URL
+          </span>
+        );
+      }
     case 'image':
       return (
         <div
-          onDragEnter={(e) => { onDrag(e); setIsDragging(true); }}
+          onDragEnter={(e) => { onDrag(e); onDragStateChange?.(true); }}
           onDragOver={onDrag}
-          onDragLeave={(e) => { onDrag(e); setIsDragging(false); }}
+          onDragLeave={(e) => { onDrag(e); onDragStateChange?.(false); }}
           onDrop={onDrop}
           onPaste={onPaste}
           className={`flex flex-col justify-center items-center w-16 h-16 border-2 border-dashed rounded-lg
