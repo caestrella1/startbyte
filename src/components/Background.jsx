@@ -5,12 +5,10 @@ export default function Background() {
   return (
     <>
       <div 
-        className="absolute inset-0 -z-20 bg-cover bg-center"
+        className="fixed inset-0 -z-20 bg-cover bg-center"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       />
-      <div className="absolute inset-0 -z-10">
-        <div className="w-full h-full bg-black opacity-50 backdrop-blur-lg"></div>
-      </div>
+      <div className="fixed inset-0 -z-10 bg-black/50 backdrop-blur-lg" />
     </>
   );
 }

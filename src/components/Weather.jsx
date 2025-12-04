@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
+const getWeatherIcon = (iconCode) => {
+  return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+};
+
 export default function Weather() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -48,33 +52,46 @@ export default function Weather() {
     fetchWeather();
   }, []);
 
-  const now = new Date();
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric'
-  });
+  if (loading) {
+    return (
+      <div className="mb-4 flex items-center justify-center gap-3">
+        <svg className="animate-spin h-6 w-6" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+        </svg>
+        <span className="text-neutral-600 dark:text-neutral-400">Loading weather...</span>
+      </div>
+    );
+  }
 
-  const weatherInfo = loading ? (
-    <span className="inline-flex items-center">
-      <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-      </svg>
-      checking weather...
-    </span>
-  ) : error || !weather ? (
-    null
-  ) : (
-    <span>It's <b className="dark:text-white">{Math.round(weather.main.temp)}°F</b> outside in <a href={`https://openweathermap.org/city/${weather.id}`} target="_blank" className="dark:text-blue-400 font-bold">{weather.name}</a>.</span>
-  );
+  if (error || !weather) {
+    return null;
+  }
 
   return (
-    <h2 className="dark:text-white/50">
-      It's currently <b className="dark:text-white">{formatter.format(now)}</b>.{' '}
-      {weatherInfo}
-    </h2>
+    <div className="mb-4 flex items-center justify-center gap-3">
+      {weather.weather[0]?.icon && (
+        <img 
+          src={getWeatherIcon(weather.weather[0].icon)} 
+          alt={weather.weather[0].description}
+          className="w-16 h-16"
+        />
+      )}
+      <div className="flex flex-col">
+        <div className="text-3xl font-bold dark:text-white">
+          {Math.round(weather.main.temp)}°F
+        </div>
+        <div className="text-sm text-neutral-600 dark:text-neutral-400">
+          <a 
+            href={`https://openweathermap.org/city/${weather.id}`} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:underline"
+          >
+            {weather.name}
+          </a>
+        </div>
+      </div>
+    </div>
   );
 }

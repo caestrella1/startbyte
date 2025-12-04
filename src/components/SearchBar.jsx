@@ -100,8 +100,15 @@ export default function SearchBar() {
     inputRef.current?.focus();
   }, []);
 
+  const handleSubmit = (e) => {
+    if (!query.trim()) {
+      e.preventDefault();
+      return;
+    }
+  };
+
   return (
-    <form ref={formRef} className="search-box mt-6 flex justify-center" action={searchProviders[provider].action} method="get">
+    <form ref={formRef} className="search-box mt-6 flex justify-center" action={searchProviders[provider].action} method="get" onSubmit={handleSubmit}>
       <div className="flex w-[500px] relative">
         <SearchProviderPicker
           provider={provider}
@@ -133,7 +140,11 @@ export default function SearchBar() {
           }}
         />
 
-        <button type="submit" className="btn-primary absolute right-1 top-1/2 -translate-y-1/2">
+        <button 
+          type="submit" 
+          disabled={!query.trim()} 
+          className="btn-primary absolute right-1 top-1/2 -translate-y-1/2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           Search
         </button>
       </div>
