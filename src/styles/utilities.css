@@ -1,5 +1,3 @@
-@tailwind components;
-
 @keyframes springHeight {
   0% { transform: scaleY(0); }
   60% { transform: scaleY(1.1); }
@@ -20,6 +18,19 @@
   100% { transform: scale(0.9); opacity: 0; }
 }
 
+@keyframes springSlideIn {
+  0% { transform: translateX(100%); }
+  60% { transform: translateX(-5%); }
+  80% { transform: translateX(2%); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes springSlideOut {
+  0% { transform: translateX(0); }
+  40% { transform: translateX(5%); }
+  100% { transform: translateX(100%); }
+}
+
 @utility animate-spring-in {
   animation: springIn 300ms forwards;
 }
@@ -31,6 +42,14 @@
 @utility animate-spring-height {
   animation: springHeight 300ms forwards;
   transform-origin: top;
+}
+
+@utility animate-spring-slide-in {
+  animation: springSlideIn 300ms forwards;
+}
+
+@utility animate-spring-slide-out {
+  animation: springSlideOut 300ms forwards;
 }
 
 @utility is-editing {

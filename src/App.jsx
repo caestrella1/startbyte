@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Background from './components/Background';
 import SearchBar from './components/SearchBar';
 import LinksSection from './components/LinksSection';
 import DateTime from './components/DateTime';
 import Weather from './components/Weather';
+import Settings from './components/Settings';
+import SettingsButton from './components/SettingsButton';
 
 export default function App() {
   const [isEditingLinksSection, setIsEditingLinksSection] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [linkStyle, setLinkStyle] = useState(() => {
+    return localStorage.getItem('linkStyle') || 'pill';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('linkStyle', linkStyle);
+  }, [linkStyle]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -27,7 +37,7 @@ export default function App() {
         <DateTime />
         <Weather />
         <SearchBar />
-        <LinksSection isEditing={isEditingLinksSection} />
+        <LinksSection isEditing={isEditingLinksSection} styleType={linkStyle} />
         <button 
           onClick={() => setIsEditingLinksSection(!isEditingLinksSection)}
           className={`mt-4 text-sm ${
@@ -39,6 +49,13 @@ export default function App() {
           {isEditingLinksSection ? 'Done' : 'Edit Links'}
         </button>
       </div>
+      <SettingsButton onClick={() => setIsSettingsOpen(true)} />
+      <Settings 
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        linkStyle={linkStyle}
+        onLinkStyleChange={setLinkStyle}
+      />
     </div>
   );
 }

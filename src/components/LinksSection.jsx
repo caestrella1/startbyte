@@ -12,20 +12,12 @@ const defaultLinks = [
   { href: "https://www.reddit.com/", label: "Reddit", icon: "https://www.reddit.com/favicon.ico" },
 ];
 
-const linkStyles = [
-  { id: 'pill', label: 'Pill' },
-  { id: 'icon', label: 'Icon' }
-];
-
-export default function LinksSection({ isEditing }) {
+export default function LinksSection({ isEditing, styleType }) {
   const [links, setLinks] = useState(() => {
     const saved = localStorage.getItem('linkOrder');
     return saved ? JSON.parse(saved) : defaultLinks;
   });
   const [editingLink, setEditingLink] = useState(null);
-  const [styleType, setStyleType] = useState(() => {
-    return localStorage.getItem('linkStyle') || 'pill';
-  });
   const linksContainerRef = useRef(null);
   const [containerHeight, setContainerHeight] = useState('auto');
 
@@ -36,10 +28,6 @@ export default function LinksSection({ isEditing }) {
   useEffect(() => {
     localStorage.setItem('linkOrder', JSON.stringify(links));
   }, [links]);
-
-  useEffect(() => {
-    localStorage.setItem('linkStyle', styleType);
-  }, [styleType]);
 
   // Add effect to measure height when style, links, or isEditing changes
   useEffect(() => {
@@ -104,20 +92,6 @@ export default function LinksSection({ isEditing }) {
 
   return (
     <>
-      <div className="grid">
-        <div className={`grid transition-[grid-template-rows] duration-300 ${
-          isEditing ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-        }`}>
-          <div className="overflow-hidden">
-            <SegmentedControl
-              className="mt-4"
-              options={linkStyles}
-              value={styleType}
-              onChange={setStyleType}
-            />
-          </div>
-        </div>
-      </div>
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <div className="transition-[height] duration-300 ease-spring min-w-0 w-full" style={{ height: containerHeight }}>
           <div ref={linksContainerRef} className="links mt-8 flex flex-wrap gap-4 justify-center min-w-0 w-full">
