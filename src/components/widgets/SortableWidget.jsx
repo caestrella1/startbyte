@@ -6,7 +6,7 @@ import ResizableWidget from './ResizableWidget';
 import { widgetRegistry } from './widgetRegistry';
 import Modal from '../ui/Modal';
 
-export default function SortableWidget({ widget, onWidgetSettingsChange, onWidgetRemove, isEditing = false }) {
+export default function SortableWidget({ widget, onWidgetSettingsChange, onWidgetRemove, isEditing = false, gridColumns = 3 }) {
   const {
     attributes,
     listeners,
@@ -30,7 +30,9 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
   const widgetDef = widgetRegistry[widget.type];
   if (!widgetDef) return null;
 
-  const width = widget.settings?.width || 1;
+  // Clamp width to current grid size
+  const widgetWidth = widget.settings?.width || 1;
+  const width = Math.min(widgetWidth, gridColumns);
   const height = widget.settings?.height || 1;
   const showBackground = widget.settings?.showBackground !== false; // Default to true
   const hasSettings = widgetDef.component.Settings !== undefined;
@@ -83,9 +85,10 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
       onResize={handleResize}
       minWidth={1}
       minHeight={1}
-      maxWidth={3}
+      maxWidth={gridColumns}
       maxHeight={3}
       isEditing={isEditing}
+      gridColumns={gridColumns}
     >
       <div
         ref={setNodeRef}

@@ -66,6 +66,10 @@ export default function App() {
     const saved = localStorage.getItem('backgroundOverlay');
     return saved ? parseFloat(saved) : 0.5; // Default overlay opacity of 0.5 (bg-black/50)
   });
+  const [gridColumns, setGridColumns] = useState(() => {
+    const saved = localStorage.getItem('gridColumns');
+    return saved ? parseInt(saved) : 3; // Default to 3 columns
+  });
 
   useEffect(() => {
     localStorage.setItem('widgets', JSON.stringify(widgets));
@@ -108,6 +112,37 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('backgroundOverlay', backgroundOverlay.toString());
   }, [backgroundOverlay]);
+
+  useEffect(() => {
+    localStorage.setItem('gridColumns', gridColumns.toString());
+  }, [gridColumns]);
+
+  // Clamp widget widths when grid size changes
+  useEffect(() => {
+    setWidgets(prevWidgets => {
+      const updated = prevWidgets.map(widget => {
+        const widgetWidth = widget.settings?.width || 1;
+        if (widgetWidth > gridColumns) {
+          // Clamp width to new grid size
+          return {
+            ...widget,
+            settings: {
+              ...widget.settings,
+              width: gridColumns,
+            },
+          };
+        }
+        return widget;
+      });
+      // Only update if something changed
+      const hasChanges = updated.some((w, i) => {
+        const oldWidth = prevWidgets[i].settings?.width || 1;
+        const newWidth = w.settings?.width || 1;
+        return oldWidth !== newWidth;
+      });
+      return hasChanges ? updated : prevWidgets;
+    });
+  }, [gridColumns]);
 
   const handleAddWidget = (widgetType) => {
     const newWidget = {
@@ -185,6 +220,7 @@ export default function App() {
       customBackgroundImage: customBackgroundImage,
       backgroundBlur: backgroundBlur,
       backgroundOverlay: backgroundOverlay,
+      gridColumns: gridColumns,
       // Collect links data for all links widgets
       linksData: {},
       // Search provider (if stored globally)
@@ -265,6 +301,9 @@ export default function App() {
           if (importData.backgroundOverlay !== undefined) {
             setBackgroundOverlay(importData.backgroundOverlay);
           }
+          if (importData.gridColumns !== undefined) {
+            setGridColumns(importData.gridColumns);
+          }
 
           // Import links data
           if (importData.linksData) {
@@ -307,6 +346,7 @@ export default function App() {
           onWidgetRemove={handleWidgetRemove}
           onWidgetReorder={handleWidgetReorder}
           isEditing={isEditing}
+          gridColumns={gridColumns}
         />
       </div>
       {/* Floating action buttons */}
@@ -469,6 +509,8 @@ export default function App() {
         onCustomBackgroundChange={setCustomBackgroundImage}
         onBackgroundBlurChange={setBackgroundBlur}
         onBackgroundOverlayChange={setBackgroundOverlay}
+        gridColumns={gridColumns}
+        onGridColumnsChange={setGridColumns}
         onResetBackground={handleResetBackground}
         onResetAll={handleResetAll}
         onExportSettings={handleExportSettings}

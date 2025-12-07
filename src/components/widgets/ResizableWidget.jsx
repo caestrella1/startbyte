@@ -9,7 +9,8 @@ export default function ResizableWidget({
   minHeight = 1,
   maxWidth = 3,
   maxHeight = 3,
-  isEditing = false
+  isEditing = false,
+  gridColumns = 3
 }) {
   const [isResizing, setIsResizing] = useState(false);
   const [resizeHandle, setResizeHandle] = useState(null);
@@ -35,13 +36,14 @@ export default function ResizableWidget({
       const deltaY = e.clientY - startPos.y;
       
       // Calculate grid units - more accurate calculation
-      // For a 3-column grid, each column is roughly (container width - 2*gap) / 3
-      // Using a more dynamic approach: ~33% per column
+      // Use the actual grid column count
       const container = widgetRef.current?.parentElement;
       if (!container) return;
       
       const containerWidth = container.offsetWidth;
-      const gridColumnSize = (containerWidth - 32) / 3; // 3 columns, 2 gaps of 16px
+      const gap = 16; // gap-4 = 16px
+      const numGaps = gridColumns - 1;
+      const gridColumnSize = (containerWidth - (numGaps * gap)) / gridColumns;
       const gridRowSize = 200; // Approximate row height
       
       let newWidth = startSize.width;

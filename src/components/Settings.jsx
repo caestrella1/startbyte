@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SettingsPanel from './settings/SettingsPanel';
 import SettingSection from './settings/SettingSection';
 import BackgroundSection from './settings/BackgroundSection';
+import GridSection from './settings/GridSection';
 import ResetSection from './settings/ResetSection';
 
 export default function Settings({ 
@@ -21,6 +22,8 @@ export default function Settings({
   onCustomGradientColorsChange, 
   onBackgroundBlurChange, 
   onBackgroundOverlayChange, 
+  gridColumns,
+  onGridColumnsChange,
   onResetBackground, 
   onResetAll, 
   onExportSettings, 
@@ -95,6 +98,17 @@ export default function Settings({
           onCustomBackgroundChange={onCustomBackgroundChange}
           onBackgroundBlurChange={onBackgroundBlurChange}
           onBackgroundOverlayChange={onBackgroundOverlayChange}
+        />
+      </SettingSection>
+
+      <SettingSection
+        categoryId="grid"
+        currentCategory={currentCategory}
+        isTransitioning={isTransitioning}
+      >
+        <GridSection
+          gridColumns={gridColumns}
+          onGridColumnsChange={onGridColumnsChange}
         />
       </SettingSection>
 
