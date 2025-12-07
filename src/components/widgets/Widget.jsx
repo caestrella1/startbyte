@@ -5,7 +5,7 @@ export default function Widget({ id, type, component: Component, settings, onSet
   const shouldDisablePointerEvents = isEditing && type !== 'links';
   
   return (
-    <div className={shouldDisablePointerEvents ? 'pointer-events-none' : ''}>
+    <div className={`${shouldDisablePointerEvents ? 'pointer-events-none' : ''} w-full`}>
       <Component settings={settings} onSettingsChange={onSettingsChange} isEditing={isEditing} />
     </div>
   );

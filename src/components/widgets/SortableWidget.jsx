@@ -34,6 +34,23 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
   const height = widget.settings?.height || 1;
   const showBackground = widget.settings?.showBackground !== false; // Default to true
   const hasSettings = widgetDef.component.Settings !== undefined;
+  
+  // Alignment settings
+  const horizontalAlign = widget.settings?.horizontalAlign || 'center';
+  const verticalAlign = widget.settings?.verticalAlign || 'center';
+  
+  // Map alignment values to Tailwind classes
+  const horizontalClasses = {
+    left: 'justify-start',
+    center: 'justify-center',
+    right: 'justify-end',
+  };
+  
+  const verticalClasses = {
+    top: 'items-start',
+    center: 'items-center',
+    bottom: 'items-end',
+  };
 
   const handleResize = (newWidth, newHeight) => {
     onWidgetSettingsChange(widget.id, {
@@ -74,13 +91,13 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
         ref={setNodeRef}
         style={style}
         onClick={handleContainerClick}
-        className={`rounded-2xl p-6 relative group h-full w-full ${
+        className={`rounded-2xl p-6 relative group h-full w-full flex ${horizontalClasses[horizontalAlign]} ${verticalClasses[verticalAlign]} ${
           isEditing && hasSettings ? 'is-editing cursor-pointer' : isEditing ? 'is-editing' : ''
         } ${
           showBackground 
             ? 'bg-white/70 dark:bg-neutral-900/30 shadow-lg backdrop-blur-xl border border-neutral-500 dark:border-white/10' 
             : isEditing 
-              ? 'border-2 border-neutral-400 dark:border-neutral-500 border' 
+              ? 'border-2 border-neutral-400 dark:border-neutral-500' 
               : ''
         }`}
       >

@@ -13,6 +13,7 @@ export default function App() {
     }
     // Default widgets
     return [
+      { id: 'greeting-1', type: 'greeting', settings: { name: 'Carlos' } },
       { id: 'searchbar-1', type: 'searchbar', settings: {} },
       { id: 'datetime-1', type: 'datetime', settings: {} },
       { id: 'weather-1', type: 'weather', settings: {} },
@@ -144,6 +145,7 @@ export default function App() {
   const handleResetAll = () => {
     // Reset widgets to defaults
     const defaultWidgets = [
+      { id: 'greeting-1', type: 'greeting', settings: { name: 'Carlos' } },
       { id: 'searchbar-1', type: 'searchbar', settings: {} },
       { id: 'datetime-1', type: 'datetime', settings: {} },
       { id: 'weather-1', type: 'weather', settings: {} },
@@ -171,12 +173,120 @@ export default function App() {
     removeStoredImage('customBackgroundImage');
   };
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 17) return "Good afternoon";
-    if (hour < 22) return "Good evening";
-    return "Good night";
+  const handleExportSettings = () => {
+    // Collect all settings
+    const exportData = {
+      version: '1.0',
+      widgets: widgets,
+      background: background,
+      backgroundType: backgroundType,
+      customSolidColor: customSolidColor,
+      customGradientColors: customGradientColors,
+      customBackgroundImage: customBackgroundImage,
+      backgroundBlur: backgroundBlur,
+      backgroundOverlay: backgroundOverlay,
+      // Collect links data for all links widgets
+      linksData: {},
+      // Search provider (if stored globally)
+      searchProvider: localStorage.getItem('searchProvider') || null,
+    };
+
+    // Collect links data for each links widget
+    widgets.forEach(widget => {
+      if (widget.type === 'links') {
+        // Use widget.id as the key (this is what LinksWidget uses)
+        const widgetId = widget.id;
+        const linkKey = `linkOrder-${widgetId}`;
+        const linksData = localStorage.getItem(linkKey);
+        if (linksData) {
+          try {
+            exportData.linksData[widgetId] = JSON.parse(linksData);
+          } catch (e) {
+            console.warn(`Failed to parse links data for widget ${widgetId}:`, e);
+          }
+        }
+      }
+    });
+
+    // Create and download JSON file
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `startbyte-settings-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportSettings = async (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const importData = JSON.parse(e.target.result);
+          
+          // Validate version (for future compatibility)
+          if (!importData.version) {
+            throw new Error('Invalid settings file format');
+          }
+
+          // Import widgets
+          if (importData.widgets) {
+            setWidgets(importData.widgets);
+          }
+
+          // Import background settings
+          if (importData.background) {
+            setBackground(importData.background);
+          }
+          if (importData.backgroundType) {
+            setBackgroundType(importData.backgroundType);
+          }
+          if (importData.customSolidColor) {
+            setCustomSolidColor(importData.customSolidColor);
+          }
+          if (importData.customGradientColors) {
+            setCustomGradientColors(importData.customGradientColors);
+          }
+          if (importData.customBackgroundImage) {
+            // Store the imported image
+            await storeImage('customBackgroundImage', importData.customBackgroundImage);
+            setCustomBackgroundImage(importData.customBackgroundImage);
+          } else {
+            setCustomBackgroundImage(null);
+            removeStoredImage('customBackgroundImage');
+          }
+          if (importData.backgroundBlur !== undefined) {
+            setBackgroundBlur(importData.backgroundBlur);
+          }
+          if (importData.backgroundOverlay !== undefined) {
+            setBackgroundOverlay(importData.backgroundOverlay);
+          }
+
+          // Import links data
+          if (importData.linksData) {
+            Object.keys(importData.linksData).forEach(widgetId => {
+              const linkKey = `linkOrder-${widgetId}`;
+              localStorage.setItem(linkKey, JSON.stringify(importData.linksData[widgetId]));
+            });
+          }
+
+          // Import search provider
+          if (importData.searchProvider) {
+            localStorage.setItem('searchProvider', importData.searchProvider);
+          }
+
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
   };
 
   return (
@@ -191,11 +301,6 @@ export default function App() {
         overlay={backgroundOverlay}
       />
       <div className="container w-full max-w-6xl mx-auto p-4 sm:p-8">
-        <div className="text-center mb-8">
-          <h1 className="mb-4 text-xl font-normal tracking-wide text-neutral-600 dark:text-neutral-400">
-            {getGreeting()}, Carlos
-          </h1>
-        </div>
         <WidgetGrid
           widgets={widgets}
           onWidgetSettingsChange={handleWidgetSettingsChange}
@@ -366,6 +471,8 @@ export default function App() {
         onBackgroundOverlayChange={setBackgroundOverlay}
         onResetBackground={handleResetBackground}
         onResetAll={handleResetAll}
+        onExportSettings={handleExportSettings}
+        onImportSettings={handleImportSettings}
       />
       <WidgetPicker
         isOpen={isWidgetPickerOpen}

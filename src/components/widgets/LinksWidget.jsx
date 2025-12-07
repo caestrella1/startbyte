@@ -4,6 +4,7 @@ import { SortableContext, arrayMove, horizontalListSortingStrategy } from '@dnd-
 import EditLinkModal from '../EditLinkModal';
 import SortableLink from '../SortableLink';
 import SegmentedControl from '../ui/SegmentedControl';
+import AlignmentPicker from '../ui/AlignmentPicker';
 
 const defaultLinks = [
   { href: "https://mail.google.com/", label: "Gmail", icon: "https://www.google.com/favicon.ico" },
@@ -87,11 +88,24 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
     setLinks(prev => prev.filter(link => link.href !== linkToDelete.href));
   };
 
+  const title = settings.title || '';
+  const showTitle = settings.showTitle !== false && title; // Show title if enabled and title exists
+  const horizontalAlign = settings.horizontalAlign || 'center';
+  const titleAlignClass = horizontalAlign === 'left' ? 'text-left' : 
+                         horizontalAlign === 'right' ? 'text-right' : 'text-center';
+  const linksJustifyClass = horizontalAlign === 'left' ? 'justify-start' : 
+                            horizontalAlign === 'right' ? 'justify-end' : 'justify-center';
+
   return (
     <>
+      {showTitle && (
+        <div className={`text-lg font-semibold dark:text-white mb-4 ${titleAlignClass}`}>
+          {title}
+        </div>
+      )}
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <div className="transition-[height] duration-300 ease-spring min-w-0 w-full" style={{ height: containerHeight }}>
-          <div ref={linksContainerRef} className="links flex flex-wrap gap-4 justify-center min-w-0 w-full">
+          <div ref={linksContainerRef} className={`links flex flex-wrap gap-4 ${linksJustifyClass} min-w-0 w-full`}>
             <SortableContext items={links.map(link => link.href)}>
               {links.map(link => (
                 <SortableLink 
@@ -131,6 +145,44 @@ LinksWidget.Settings = function LinksSettings({ settings = {}, onSettingsChange,
     <div className="w-full md:w-96">
       <h2 className="text-lg font-bold mb-4">Links Settings</h2>
       <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+            Widget Title
+          </label>
+          <input
+            type="text"
+            value={settings.title || ''}
+            onChange={(e) => onSettingsChange({ ...settings, title: e.target.value })}
+            placeholder="Enter widget title"
+            className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
+              bg-white dark:bg-neutral-800
+              text-black dark:text-white
+              text-sm"
+          />
+        </div>
+        <div>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={settings.showTitle !== false}
+              onChange={(e) => onSettingsChange({ ...settings, showTitle: e.target.checked })}
+              className="rounded"
+            />
+            <span className="text-sm">Show title</span>
+          </label>
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+            Alignment
+          </label>
+          <AlignmentPicker
+            horizontalAlign={settings.horizontalAlign || 'center'}
+            verticalAlign={settings.verticalAlign || 'center'}
+            onChange={({ horizontalAlign, verticalAlign }) => 
+              onSettingsChange({ ...settings, horizontalAlign, verticalAlign })
+            }
+          />
+        </div>
         <div>
           <label className="block text-sm font-medium mb-3 text-black dark:text-white">
             Link Style

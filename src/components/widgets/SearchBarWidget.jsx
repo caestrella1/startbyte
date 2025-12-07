@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import SearchProviderPicker from '../SearchProviderPicker';
 import { searchProviders } from '../../utils/searchProviders';
 import Suggestions from '../Suggestions';
+import AlignmentPicker from '../ui/AlignmentPicker';
 
 export default function SearchBarWidget({ settings = {}, onSettingsChange }) {
   const [provider, setProvider] = useState(settings.provider || 'duckduckgo');
@@ -165,6 +166,18 @@ SearchBarWidget.Settings = function SearchBarSettings({ settings = {}, onSetting
     <div className="w-full md:w-96">
       <h2 className="text-lg font-bold mb-4">Search Bar Settings</h2>
       <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+            Alignment
+          </label>
+          <AlignmentPicker
+            horizontalAlign={settings.horizontalAlign || 'center'}
+            verticalAlign={settings.verticalAlign || 'center'}
+            onChange={({ horizontalAlign, verticalAlign }) => 
+              onSettingsChange({ ...settings, horizontalAlign, verticalAlign })
+            }
+          />
+        </div>
         <div>
           <label className="flex items-center gap-2">
             <input

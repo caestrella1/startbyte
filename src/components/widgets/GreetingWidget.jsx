@@ -1,0 +1,82 @@
+import React from 'react';
+import AlignmentPicker from '../ui/AlignmentPicker';
+
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  if (hour < 22) return "Good evening";
+  return "Good night";
+};
+
+export default function GreetingWidget({ settings = {} }) {
+  const name = settings.name || 'Carlos';
+  const horizontalAlign = settings.horizontalAlign || 'center';
+  const textAlignClass = horizontalAlign === 'left' ? 'text-left' : 
+                         horizontalAlign === 'right' ? 'text-right' : 'text-center';
+
+  return (
+    <div className={textAlignClass}>
+      <div className="text-xl font-normal tracking-wide text-neutral-600 dark:text-neutral-400">
+        {getGreeting()}, {name}
+      </div>
+    </div>
+  );
+}
+
+GreetingWidget.Settings = function GreetingSettings({ settings = {}, onSettingsChange, onRemove }) {
+  return (
+    <div className="w-full md:w-96">
+      <h2 className="text-lg font-bold mb-4">Greeting Settings</h2>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+            Name
+          </label>
+          <input
+            type="text"
+            value={settings.name || 'Carlos'}
+            onChange={(e) => onSettingsChange({ ...settings, name: e.target.value })}
+            placeholder="Enter your name"
+            className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
+              bg-white dark:bg-neutral-800
+              text-black dark:text-white
+              text-sm"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+            Alignment
+          </label>
+          <AlignmentPicker
+            horizontalAlign={settings.horizontalAlign || 'center'}
+            verticalAlign={settings.verticalAlign || 'center'}
+            onChange={({ horizontalAlign, verticalAlign }) => 
+              onSettingsChange({ ...settings, horizontalAlign, verticalAlign })
+            }
+          />
+        </div>
+        <div>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={settings.showBackground !== false}
+              onChange={(e) => onSettingsChange({ ...settings, showBackground: e.target.checked })}
+              className="rounded"
+            />
+            <span className="text-sm">Show background</span>
+          </label>
+        </div>
+        {onRemove && (
+          <button
+            onClick={onRemove}
+            className="btn-danger w-full mt-4"
+          >
+            Remove Widget
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+

@@ -2,6 +2,8 @@ import DateTimeWidget from './DateTimeWidget';
 import WeatherWidget from './WeatherWidget';
 import LinksWidget from './LinksWidget';
 import SearchBarWidget from './SearchBarWidget';
+import TextWidget from './TextWidget';
+import GreetingWidget from './GreetingWidget';
 
 export const widgetRegistry = {
   datetime: {
@@ -23,6 +25,16 @@ export const widgetRegistry = {
     name: 'Search Bar',
     description: 'Web search with autocomplete',
     component: SearchBarWidget,
+  },
+  text: {
+    name: 'Text',
+    description: 'Display and edit custom text',
+    component: TextWidget,
+  },
+  greeting: {
+    name: 'Greeting',
+    description: 'Personalized greeting with time-based message',
+    component: GreetingWidget,
   },
 };
 
