@@ -19,10 +19,10 @@ export default function RenderedIcon({
     case 'favicon':
       if (!href) {
         return (
-          <span className="text-sm text-neutral-500">
-            Enter URL first
-          </span>
-        );
+        <span className="text-sm text-neutral-500">
+          Enter URL first
+        </span>
+      );
       }
       try {
         const domain = new URL(href).hostname;

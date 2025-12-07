@@ -4,7 +4,7 @@ const getWeatherIcon = (iconCode) => {
   return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 };
 
-export default function Weather() {
+export default function WeatherWidget({ settings = {} }) {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -12,12 +12,11 @@ export default function Weather() {
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        // Check cache first
         const cached = localStorage.getItem('weatherData');
         if (cached) {
           const { data, timestamp } = JSON.parse(cached);
           const age = Date.now() - timestamp;
-          if (age < 30 * 60 * 1000) { // Less than 30 minutes old
+          if (age < 30 * 60 * 1000) {
             setWeather(data);
             setLoading(false);
             return;
@@ -26,7 +25,6 @@ export default function Weather() {
 
         const pos = await new Promise((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(resolve, reject);
-          console.log('Fetching weather data...', );
         });
 
         const response = await fetch(
@@ -34,7 +32,6 @@ export default function Weather() {
         );
         const data = await response.json();
         
-        // Cache the new data
         localStorage.setItem('weatherData', JSON.stringify({
           data,
           timestamp: Date.now()
@@ -54,7 +51,7 @@ export default function Weather() {
 
   if (loading) {
     return (
-      <div className="mb-4 flex items-center justify-center gap-3">
+      <div className="flex items-center justify-center gap-3">
         <svg className="animate-spin h-6 w-6" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
@@ -69,7 +66,7 @@ export default function Weather() {
   }
 
   return (
-    <div className="mb-4 flex items-center justify-center gap-3">
+    <div className="flex items-center justify-center gap-3">
       {weather.weather[0]?.icon && (
         <img 
           src={getWeatherIcon(weather.weather[0].icon)} 
@@ -95,3 +92,33 @@ export default function Weather() {
     </div>
   );
 }
+
+WeatherWidget.Settings = function WeatherSettings({ settings = {}, onSettingsChange, onRemove }) {
+  return (
+    <div className="w-full md:w-96">
+      <h2 className="text-lg font-bold mb-4">Weather Settings</h2>
+      <div className="space-y-4">
+        <div>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={settings.showBackground !== false}
+              onChange={(e) => onSettingsChange({ ...settings, showBackground: e.target.checked })}
+              className="rounded"
+            />
+            <span className="text-sm">Show background</span>
+          </label>
+        </div>
+        {onRemove && (
+          <button
+            onClick={onRemove}
+            className="btn-danger w-full mt-4"
+          >
+            Remove Widget
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+

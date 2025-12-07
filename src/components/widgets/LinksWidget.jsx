@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DndContext, useSensor, useSensors, PointerSensor, DragOverlay } from '@dnd-kit/core';
+import { DndContext, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { SortableContext, arrayMove, horizontalListSortingStrategy } from '@dnd-kit/sortable';
-import EditLinkModal from './EditLinkModal';
-import SortableLink from './SortableLink';
-import SegmentedControl from './ui/SegmentedControl';
+import EditLinkModal from '../EditLinkModal';
+import SortableLink from '../SortableLink';
+import SegmentedControl from '../ui/SegmentedControl';
 
 const defaultLinks = [
   { href: "https://mail.google.com/", label: "Gmail", icon: "https://www.google.com/favicon.ico" },
@@ -12,24 +12,31 @@ const defaultLinks = [
   { href: "https://www.reddit.com/", label: "Reddit", icon: "https://www.reddit.com/favicon.ico" },
 ];
 
-export default function LinksSection({ isEditing, styleType }) {
+const linkStyles = [
+  { id: 'pill', label: 'Pill' },
+  { id: 'icon', label: 'Icon' }
+];
+
+export default function LinksWidget({ settings = {}, onSettingsChange, isEditing = false }) {
+  const widgetId = settings.id || 'links';
   const [links, setLinks] = useState(() => {
-    const saved = localStorage.getItem('linkOrder');
+    const saved = localStorage.getItem(`linkOrder-${widgetId}`);
     return saved ? JSON.parse(saved) : defaultLinks;
   });
   const [editingLink, setEditingLink] = useState(null);
   const linksContainerRef = useRef(null);
   const [containerHeight, setContainerHeight] = useState('auto');
+  const styleType = settings.styleType || 'pill';
 
   const sensors = useSensors(
     useSensor(PointerSensor)
   );
 
   useEffect(() => {
-    localStorage.setItem('linkOrder', JSON.stringify(links));
-  }, [links]);
+    localStorage.setItem(`linkOrder-${widgetId}`, JSON.stringify(links));
+  }, [links, widgetId]);
 
-  // Add effect to measure height when style, links, or isEditing changes
+
   useEffect(() => {
     const updateHeight = () => {
       if (linksContainerRef.current) {
@@ -37,19 +44,13 @@ export default function LinksSection({ isEditing, styleType }) {
       }
     };
     
-    // Use ResizeObserver for more reliable height updates
     let resizeObserver;
     if (linksContainerRef.current) {
-      resizeObserver = new ResizeObserver(() => {
-        updateHeight();
-      });
+      resizeObserver = new ResizeObserver(updateHeight);
       resizeObserver.observe(linksContainerRef.current);
     }
     
-    // Initial update
     updateHeight();
-    
-    // Also update on window resize as fallback
     window.addEventListener('resize', updateHeight);
     
     return () => {
@@ -69,7 +70,7 @@ export default function LinksSection({ isEditing, styleType }) {
         return arrayMove(items, oldIndex, newIndex);
       });
     }
-  }
+  };
 
   const handleSaveLink = (updatedLink) => {
     if (editingLink) {
@@ -86,15 +87,11 @@ export default function LinksSection({ isEditing, styleType }) {
     setLinks(prev => prev.filter(link => link.href !== linkToDelete.href));
   };
 
-  const onEditLink = (link) => {
-    setEditingLink(link);
-  };
-
   return (
     <>
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <div className="transition-[height] duration-300 ease-spring min-w-0 w-full" style={{ height: containerHeight }}>
-          <div ref={linksContainerRef} className="links mt-8 flex flex-wrap gap-4 justify-center min-w-0 w-full">
+          <div ref={linksContainerRef} className="links flex flex-wrap gap-4 justify-center min-w-0 w-full">
             <SortableContext items={links.map(link => link.href)}>
               {links.map(link => (
                 <SortableLink 
@@ -102,7 +99,7 @@ export default function LinksSection({ isEditing, styleType }) {
                   link={link}
                   isEditing={isEditing}
                   styleType={styleType}
-                  onEdit={onEditLink}
+                  onEdit={(link) => setEditingLink(link)}
                 />
               ))}
             </SortableContext>
@@ -126,3 +123,45 @@ export default function LinksSection({ isEditing, styleType }) {
     </>
   );
 }
+
+LinksWidget.Settings = function LinksSettings({ settings = {}, onSettingsChange, onRemove }) {
+  const styleType = settings.styleType || 'pill';
+
+  return (
+    <div className="w-full md:w-96">
+      <h2 className="text-lg font-bold mb-4">Links Settings</h2>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+            Link Style
+          </label>
+          <SegmentedControl
+            options={linkStyles}
+            value={styleType}
+            onChange={(value) => onSettingsChange({ ...settings, styleType: value })}
+          />
+        </div>
+        <div>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={settings.showBackground !== false}
+              onChange={(e) => onSettingsChange({ ...settings, showBackground: e.target.checked })}
+              className="rounded"
+            />
+            <span className="text-sm">Show background</span>
+          </label>
+        </div>
+        {onRemove && (
+          <button
+            onClick={onRemove}
+            className="btn-danger w-full mt-4"
+          >
+            Remove Widget
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+

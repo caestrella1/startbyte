@@ -171,7 +171,7 @@ export default function EditLinkModal({ isOpen, link, onClose, onSave, onDelete 
                                     onChange={setIconType}
                                 />
                                 <div className={`pt-5 ${iconType === 'url' ? 'w-full' : ''}`}>
-                                    {renderIconInput()}
+                                {renderIconInput()}
                                 </div>
                             </div>
                         </div>
