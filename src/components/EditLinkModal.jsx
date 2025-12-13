@@ -103,6 +103,7 @@ export default function EditLinkModal({ isOpen, link, onClose, onSave, onDelete 
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        e.stopPropagation();
         onSave({
             ...link,
             label,
@@ -200,7 +201,8 @@ export default function EditLinkModal({ isOpen, link, onClose, onSave, onDelete 
                         {onDelete && (
                             <button
                                 type="button"
-                                onClick={() => {
+                                onClick={(e) => {
+                                    e.stopPropagation();
                                     onDelete(link);
                                     onClose();
                                 }}

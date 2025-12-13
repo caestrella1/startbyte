@@ -3,7 +3,7 @@ import { DndContext, useSensor, useSensors, PointerSensor } from '@dnd-kit/core'
 import { SortableContext, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable';
 import SortableWidget from './widgets/SortableWidget';
 
-export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRemove, onWidgetReorder, isEditing = false, gridColumns = 3 }) {
+export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRemove, onWidgetReorder, isEditing = false, gridColumns = 3, rowHeight = 120 }) {
   const gridRef = useRef(null);
   const cols = Number(gridColumns) || 3;
 
@@ -25,11 +25,11 @@ export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRe
     }
   };
 
-  // Update grid columns whenever gridColumns changes or on resize
+  // Update grid columns and rows whenever gridColumns changes or on resize
   useEffect(() => {
     if (!gridRef.current) return;
     
-    const updateGridColumns = () => {
+    const updateGrid = () => {
       if (!gridRef.current) return;
       const width = window.innerWidth;
       
@@ -45,27 +45,28 @@ export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRe
         columns = 1;
       }
       
-      // Apply the grid template columns directly
+      // Apply the grid template columns and rows
       gridRef.current.style.gridTemplateColumns = `repeat(${columns}, minmax(0, 1fr))`;
+      gridRef.current.style.gridAutoRows = `${rowHeight}px`;
     };
 
     // Update immediately
-    updateGridColumns();
+    updateGrid();
     
     // Also update on window resize
-    window.addEventListener('resize', updateGridColumns);
+    window.addEventListener('resize', updateGrid);
     
     return () => {
-      window.removeEventListener('resize', updateGridColumns);
+      window.removeEventListener('resize', updateGrid);
     };
-  }, [cols]);
+  }, [cols, rowHeight]);
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <SortableContext items={widgets.map(w => w.id)} strategy={rectSortingStrategy}>
         <div 
           ref={gridRef}
-          className="grid gap-4 w-full auto-rows-min"
+          className="grid gap-4 w-full"
         >
           {widgets.map((widget) => (
             <SortableWidget

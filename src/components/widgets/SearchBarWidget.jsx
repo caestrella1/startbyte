@@ -3,6 +3,7 @@ import SearchProviderPicker from '../SearchProviderPicker';
 import { searchProviders } from '../../utils/searchProviders';
 import Suggestions from '../Suggestions';
 import AlignmentPicker from '../ui/AlignmentPicker';
+import Switch from '../ui/Switch';
 
 export default function SearchBarWidget({ settings = {}, onSettingsChange }) {
   const [provider, setProvider] = useState(settings.provider || 'duckduckgo');
@@ -179,15 +180,11 @@ SearchBarWidget.Settings = function SearchBarSettings({ settings = {}, onSetting
           />
         </div>
         <div>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={settings.showBackground !== false}
-              onChange={(e) => onSettingsChange({ ...settings, showBackground: e.target.checked })}
-              className="rounded"
-            />
-            <span className="text-sm">Show background</span>
-          </label>
+          <Switch
+            checked={settings.showBackground !== false}
+            onChange={(checked) => onSettingsChange({ ...settings, showBackground: checked })}
+            label="Show background"
+          />
         </div>
         {onRemove && (
           <button

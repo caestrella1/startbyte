@@ -1,0 +1,92 @@
+{
+  "widgets": [
+    { 
+      "id": "greeting-1", 
+      "type": "greeting", 
+      "settings": { 
+        "name": "Carlos",
+        "width": 3,
+        "height": 1,
+        "showBackground": true,
+        "horizontalAlign": "center",
+        "verticalAlign": "center"
+      } 
+    },
+    { 
+      "id": "searchbar-1", 
+      "type": "searchbar", 
+      "settings": {
+        "width": 3,
+        "height": 1,
+        "showBackground": true,
+        "horizontalAlign": "center",
+        "verticalAlign": "center",
+        "provider": "duckduckgo"
+      } 
+    },
+    { 
+      "id": "datetime-1", 
+      "type": "datetime", 
+      "settings": {
+        "width": 1,
+        "height": 1,
+        "showBackground": true,
+        "horizontalAlign": "center",
+        "verticalAlign": "center",
+        "hour12": false,
+        "showWeekday": true,
+        "showTimeZone": false,
+        "timeZone": ""
+      } 
+    },
+    { 
+      "id": "weather-1", 
+      "type": "weather", 
+      "settings": {
+        "width": 2,
+        "height": 1,
+        "showBackground": true,
+        "horizontalAlign": "left",
+        "verticalAlign": "center",
+        "location": "",
+        "forecastDays": 5
+      } 
+    },
+    { 
+      "id": "links-1", 
+      "type": "links", 
+      "settings": { 
+        "styleType": "icon",
+        "width": 3,
+        "height": 1,
+        "showBackground": true,
+        "horizontalAlign": "center",
+        "verticalAlign": "center",
+        "title": "",
+        "showTitle": false,
+        "defaultLinks": [
+          { "href": "https://www.google.com/", "label": "Google", "icon": "https://www.google.com/favicon.ico" },
+          { "href": "https://www.facebook.com/", "label": "Facebook", "icon": "https://www.facebook.com/favicon.ico" },
+          { "href": "https://www.x.com/", "label": "X", "icon": "https://www.x.com/favicon.ico" },
+          { "href": "https://www.reddit.com/", "label": "Reddit", "icon": "https://www.reddit.com/favicon.ico" }
+        ]
+      } 
+    }
+  ],
+  "background": {
+    "type": "solid",
+    "color": "#000000"
+  },
+  "backgroundType": "gradient",
+  "customSolidColor": "#000000",
+  "customGradientColors": {
+    "from": "#0cbb58",
+    "to": "#1388a0"
+  },
+  "customBackgroundImage": null,
+  "backgroundBlur": 16,
+  "backgroundOverlay": 0.5,
+  "gridColumns": 3,
+  "rowHeight": 120
+}
+

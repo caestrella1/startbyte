@@ -12,11 +12,11 @@ export default function ResizableWidget({
   isEditing = false,
   gridColumns = 3
 }) {
+  const widgetRef = useRef(null);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeHandle, setResizeHandle] = useState(null);
   const [startSize, setStartSize] = useState({ width: 0, height: 0 });
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-  const widgetRef = useRef(null);
 
   const handleMouseDown = (e, handle) => {
     if (!isEditing) return;
@@ -35,8 +35,7 @@ export default function ResizableWidget({
       const deltaX = e.clientX - startPos.x;
       const deltaY = e.clientY - startPos.y;
       
-      // Calculate grid units - more accurate calculation
-      // Use the actual grid column count
+      // Calculate grid units - use actual grid dimensions
       const container = widgetRef.current?.parentElement;
       if (!container) return;
       
@@ -44,7 +43,12 @@ export default function ResizableWidget({
       const gap = 16; // gap-4 = 16px
       const numGaps = gridColumns - 1;
       const gridColumnSize = (containerWidth - (numGaps * gap)) / gridColumns;
-      const gridRowSize = 200; // Approximate row height
+      
+      // Get the actual row height from the grid's computed style
+      const computedStyle = window.getComputedStyle(container);
+      const gridAutoRows = computedStyle.gridAutoRows;
+      // Parse the row height (e.g., "200px" -> 200)
+      const gridRowSize = parseFloat(gridAutoRows) || gridColumnSize;
       
       let newWidth = startSize.width;
       let newHeight = startSize.height;

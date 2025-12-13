@@ -1,5 +1,6 @@
 import React from 'react';
 import AlignmentPicker from '../ui/AlignmentPicker';
+import Switch from '../ui/Switch';
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -17,7 +18,7 @@ export default function GreetingWidget({ settings = {} }) {
 
   return (
     <div className={textAlignClass}>
-      <div className="text-xl font-normal tracking-wide text-neutral-600 dark:text-neutral-400">
+      <div className="text-xl font-normal tracking-wide text-neutral-600 dark:text-white">
         {getGreeting()}, {name}
       </div>
     </div>
@@ -57,15 +58,11 @@ GreetingWidget.Settings = function GreetingSettings({ settings = {}, onSettingsC
           />
         </div>
         <div>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={settings.showBackground !== false}
-              onChange={(e) => onSettingsChange({ ...settings, showBackground: e.target.checked })}
-              className="rounded"
-            />
-            <span className="text-sm">Show background</span>
-          </label>
+          <Switch
+            checked={settings.showBackground !== false}
+            onChange={(checked) => onSettingsChange({ ...settings, showBackground: checked })}
+            label="Show background"
+          />
         </div>
         {onRemove && (
           <button

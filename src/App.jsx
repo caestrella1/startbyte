@@ -4,6 +4,7 @@ import WidgetGrid from './components/WidgetGrid';
 import WidgetPicker from './components/widgets/WidgetPicker';
 import Settings from './components/Settings';
 import { getStoredImage, storeImage, removeStoredImage } from './utils/imageStorage';
+import defaultConfig from './config/defaults.json';
 
 export default function App() {
   const [widgets, setWidgets] = useState(() => {
@@ -11,14 +12,8 @@ export default function App() {
     if (saved) {
       return JSON.parse(saved);
     }
-    // Default widgets
-    return [
-      { id: 'greeting-1', type: 'greeting', settings: { name: 'Carlos' } },
-      { id: 'searchbar-1', type: 'searchbar', settings: {} },
-      { id: 'datetime-1', type: 'datetime', settings: {} },
-      { id: 'weather-1', type: 'weather', settings: {} },
-      { id: 'links-1', type: 'links', settings: { styleType: 'pill' } },
-    ];
+    // Default widgets from config
+    return defaultConfig.widgets;
   });
   const [isWidgetPickerOpen, setIsWidgetPickerOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -33,16 +28,16 @@ export default function App() {
         if (saved.startsWith('solid-') || saved.startsWith('gradient-')) {
           return saved;
         }
-        return { type: 'solid', color: '#000000' };
+        return defaultConfig.background;
       }
     }
-    return { type: 'solid', color: '#000000' };
+    return defaultConfig.background;
   });
   const [backgroundType, setBackgroundType] = useState(() => {
-    return localStorage.getItem('backgroundType') || 'solid';
+    return localStorage.getItem('backgroundType') || defaultConfig.backgroundType;
   });
   const [customSolidColor, setCustomSolidColor] = useState(() => {
-    return localStorage.getItem('customSolidColor') || '#000000';
+    return localStorage.getItem('customSolidColor') || defaultConfig.customSolidColor;
   });
   const [customGradientColors, setCustomGradientColors] = useState(() => {
     const saved = localStorage.getItem('customGradientColors');
@@ -50,25 +45,29 @@ export default function App() {
       try {
         return JSON.parse(saved);
       } catch {
-        return { from: '#000000', to: '#ffffff' };
+        return defaultConfig.customGradientColors;
       }
     }
-    return { from: '#000000', to: '#ffffff' };
+    return defaultConfig.customGradientColors;
   });
   const [customBackgroundImage, setCustomBackgroundImage] = useState(() => {
     return getStoredImage('customBackgroundImage');
   });
   const [backgroundBlur, setBackgroundBlur] = useState(() => {
     const saved = localStorage.getItem('backgroundBlur');
-    return saved ? parseFloat(saved) : 16; // Default blur of 16px (backdrop-blur-lg)
+    return saved ? parseFloat(saved) : defaultConfig.backgroundBlur;
   });
   const [backgroundOverlay, setBackgroundOverlay] = useState(() => {
     const saved = localStorage.getItem('backgroundOverlay');
-    return saved ? parseFloat(saved) : 0.5; // Default overlay opacity of 0.5 (bg-black/50)
+    return saved ? parseFloat(saved) : defaultConfig.backgroundOverlay;
   });
   const [gridColumns, setGridColumns] = useState(() => {
     const saved = localStorage.getItem('gridColumns');
-    return saved ? parseInt(saved) : 3; // Default to 3 columns
+    return saved ? parseInt(saved) : defaultConfig.gridColumns;
+  });
+  const [rowHeight, setRowHeight] = useState(() => {
+    const saved = localStorage.getItem('rowHeight');
+    return saved ? parseInt(saved) : defaultConfig.rowHeight;
   });
 
   useEffect(() => {
@@ -116,6 +115,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('gridColumns', gridColumns.toString());
   }, [gridColumns]);
+
+  useEffect(() => {
+    localStorage.setItem('rowHeight', rowHeight.toString());
+  }, [rowHeight]);
 
   // Clamp widget widths when grid size changes
   useEffect(() => {
@@ -168,40 +171,48 @@ export default function App() {
   };
 
   const handleResetBackground = () => {
-    setBackground({ type: 'solid', color: '#000000' });
-    setBackgroundType('solid');
-    setCustomSolidColor('#000000');
-    setCustomGradientColors({ from: '#000000', to: '#ffffff' });
-    setCustomBackgroundImage(null);
-    setBackgroundBlur(16);
-    setBackgroundOverlay(0.5);
+    setBackground(defaultConfig.background);
+    setBackgroundType(defaultConfig.backgroundType);
+    setCustomSolidColor(defaultConfig.customSolidColor);
+    setCustomGradientColors(defaultConfig.customGradientColors);
+    setCustomBackgroundImage(defaultConfig.customBackgroundImage);
+    setBackgroundBlur(defaultConfig.backgroundBlur);
+    setBackgroundOverlay(defaultConfig.backgroundOverlay);
   };
 
   const handleResetAll = () => {
-    // Reset widgets to defaults
-    const defaultWidgets = [
-      { id: 'greeting-1', type: 'greeting', settings: { name: 'Carlos' } },
-      { id: 'searchbar-1', type: 'searchbar', settings: {} },
-      { id: 'datetime-1', type: 'datetime', settings: {} },
-      { id: 'weather-1', type: 'weather', settings: {} },
-      { id: 'links-1', type: 'links', settings: { styleType: 'pill' } },
-    ];
+    // Clear all links data for links widgets first
+    const linkKeys = Object.keys(localStorage).filter(key => key.startsWith('linkOrder-'));
+    linkKeys.forEach(key => localStorage.removeItem(key));
+    
+    // Reset widgets to defaults with new IDs to force remounting
+    const timestamp = Date.now();
+    const defaultWidgets = defaultConfig.widgets.map(widget => ({
+      ...widget,
+      id: `${widget.type}-${timestamp}`,
+    }));
     setWidgets(defaultWidgets);
     
     // Reset background
-    setBackground({ type: 'solid', color: '#000000' });
-    setBackgroundType('solid');
-    setCustomSolidColor('#000000');
-    setCustomGradientColors({ from: '#000000', to: '#ffffff' });
-    setCustomBackgroundImage(null);
-    setBackgroundBlur(16);
-    setBackgroundOverlay(0.5);
+    setBackground(defaultConfig.background);
+    setBackgroundType(defaultConfig.backgroundType);
+    setCustomSolidColor(defaultConfig.customSolidColor);
+    setCustomGradientColors(defaultConfig.customGradientColors);
+    setCustomBackgroundImage(defaultConfig.customBackgroundImage);
+    setBackgroundBlur(defaultConfig.backgroundBlur);
+    setBackgroundOverlay(defaultConfig.backgroundOverlay);
+    
+    // Reset grid settings
+    setGridColumns(defaultConfig.gridColumns);
+    setRowHeight(defaultConfig.rowHeight);
     
     // Clear localStorage
     localStorage.removeItem('widgets');
     localStorage.removeItem('background');
     localStorage.removeItem('backgroundType');
     localStorage.removeItem('customSolidColor');
+    localStorage.removeItem('gridColumns');
+    localStorage.removeItem('rowHeight');
     localStorage.removeItem('customGradientColors');
     localStorage.removeItem('backgroundBlur');
     localStorage.removeItem('backgroundOverlay');
@@ -221,6 +232,7 @@ export default function App() {
       backgroundBlur: backgroundBlur,
       backgroundOverlay: backgroundOverlay,
       gridColumns: gridColumns,
+      rowHeight: rowHeight,
       // Collect links data for all links widgets
       linksData: {},
       // Search provider (if stored globally)
@@ -304,6 +316,9 @@ export default function App() {
           if (importData.gridColumns !== undefined) {
             setGridColumns(importData.gridColumns);
           }
+          if (importData.rowHeight !== undefined) {
+            setRowHeight(importData.rowHeight);
+          }
 
           // Import links data
           if (importData.linksData) {
@@ -347,6 +362,7 @@ export default function App() {
           onWidgetReorder={handleWidgetReorder}
           isEditing={isEditing}
           gridColumns={gridColumns}
+          rowHeight={rowHeight}
         />
       </div>
       {/* Floating action buttons */}
@@ -511,6 +527,8 @@ export default function App() {
         onBackgroundOverlayChange={setBackgroundOverlay}
         gridColumns={gridColumns}
         onGridColumnsChange={setGridColumns}
+        rowHeight={rowHeight}
+        onRowHeightChange={setRowHeight}
         onResetBackground={handleResetBackground}
         onResetAll={handleResetAll}
         onExportSettings={handleExportSettings}

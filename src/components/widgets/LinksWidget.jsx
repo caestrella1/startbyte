@@ -5,13 +5,8 @@ import EditLinkModal from '../EditLinkModal';
 import SortableLink from '../SortableLink';
 import SegmentedControl from '../ui/SegmentedControl';
 import AlignmentPicker from '../ui/AlignmentPicker';
-
-const defaultLinks = [
-  { href: "https://mail.google.com/", label: "Gmail", icon: "https://www.google.com/favicon.ico" },
-  { href: "https://calendar.google.com/", label: "Calendar", icon: "https://calendar.google.com/favicon.ico" },
-  { href: "https://github.com/", label: "GitHub", icon: "https://github.com/favicon.ico" },
-  { href: "https://www.reddit.com/", label: "Reddit", icon: "https://www.reddit.com/favicon.ico" },
-];
+import Switch from '../ui/Switch';
+import defaultConfig from '../../config/defaults.json';
 
 const linkStyles = [
   { id: 'pill', label: 'Pill' },
@@ -22,12 +17,22 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
   const widgetId = settings.id || 'links';
   const [links, setLinks] = useState(() => {
     const saved = localStorage.getItem(`linkOrder-${widgetId}`);
-    return saved ? JSON.parse(saved) : defaultLinks;
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    // Get default links from widget settings or fallback to defaults.json
+    const defaultLinks = settings.defaultLinks || defaultConfig.widgets.find(w => w.type === 'links')?.settings?.defaultLinks || [];
+    return defaultLinks;
   });
   const [editingLink, setEditingLink] = useState(null);
   const linksContainerRef = useRef(null);
-  const [containerHeight, setContainerHeight] = useState('auto');
-  const styleType = settings.styleType || 'pill';
+  const widgetContainerRef = useRef(null);
+  const [shouldScrollHorizontally, setShouldScrollHorizontally] = useState(false);
+  const styleType = settings.styleType || 'icon';
+  const widgetWidth = settings.width || 1;
+  const widgetHeight = settings.height || 1;
+  const title = settings.title || '';
+  const showTitle = settings.showTitle !== false && title; // Show title if enabled and title exists
 
   const sensors = useSensors(
     useSensor(PointerSensor)
@@ -39,28 +44,67 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
 
 
   useEffect(() => {
-    const updateHeight = () => {
-      if (linksContainerRef.current) {
-        setContainerHeight(`${linksContainerRef.current.scrollHeight}px`);
-      }
+    const updateLayout = () => {
+      if (!linksContainerRef.current || !widgetContainerRef.current) return;
+      
+      const container = widgetContainerRef.current;
+      
+      // Get the available height for links (excluding title if shown)
+      const titleHeight = showTitle ? 48 : 0; // mb-4 = 16px + text height ~32px
+      const availableHeight = container.offsetHeight - titleHeight;
+      
+      // Calculate row height based on style type
+      // For icon style: each icon container is w-24 (96px) height
+      // For pill style: depends on content, but roughly ~40px height
+      const rowHeight = styleType === 'icon' ? 96 : 40;
+      
+      // Use configured link rows, defaulting to widgetHeight
+      const targetRows = settings.linkRows || widgetHeight;
+      
+      // Calculate how many icons fit per row based on container width
+      const containerWidth = container.offsetWidth;
+      const iconWidth = styleType === 'icon' ? 96 : 120; // Approximate width per icon/pill
+      const gap = 16; // gap-4 = 16px
+      const iconsPerRow = Math.max(1, Math.floor((containerWidth + gap) / (iconWidth + gap)));
+      
+      // Total icons that can fit in the target number of rows
+      const totalIconsThatFit = targetRows * iconsPerRow;
+      
+      // Total icons including the "Add Link" button if in edit mode
+      const totalItems = links.length + (isEditing ? 1 : 0);
+      
+      // Enable horizontal scrolling if we have more items than can fit in target rows
+      setShouldScrollHorizontally(totalItems > totalIconsThatFit);
     };
     
     let resizeObserver;
+    let widgetResizeObserver;
+    
+    // Observe the links container for content changes
     if (linksContainerRef.current) {
-      resizeObserver = new ResizeObserver(updateHeight);
+      resizeObserver = new ResizeObserver(updateLayout);
       resizeObserver.observe(linksContainerRef.current);
     }
     
-    updateHeight();
-    window.addEventListener('resize', updateHeight);
+    // Observe the widget container for size changes (when widget is resized)
+    if (widgetContainerRef.current) {
+      widgetResizeObserver = new ResizeObserver(updateLayout);
+      widgetResizeObserver.observe(widgetContainerRef.current);
+    }
+    
+    updateLayout();
+    window.addEventListener('resize', updateLayout);
     
     return () => {
       if (resizeObserver) {
         resizeObserver.disconnect();
       }
-      window.removeEventListener('resize', updateHeight);
+      if (widgetResizeObserver) {
+        widgetResizeObserver.disconnect();
+      }
+      window.removeEventListener('resize', updateLayout);
     };
-  }, [styleType, links, isEditing]);
+  }, [styleType, links, isEditing, widgetWidth, widgetHeight, showTitle, settings.linkRows]);
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -88,8 +132,6 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
     setLinks(prev => prev.filter(link => link.href !== linkToDelete.href));
   };
 
-  const title = settings.title || '';
-  const showTitle = settings.showTitle !== false && title; // Show title if enabled and title exists
   const horizontalAlign = settings.horizontalAlign || 'center';
   const titleAlignClass = horizontalAlign === 'left' ? 'text-left' : 
                          horizontalAlign === 'right' ? 'text-right' : 'text-center';
@@ -97,15 +139,31 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
                             horizontalAlign === 'right' ? 'justify-end' : 'justify-center';
 
   return (
-    <>
+    <div ref={widgetContainerRef} className="w-full h-full flex flex-col min-w-0">
       {showTitle && (
-        <div className={`text-lg font-semibold dark:text-white mb-4 ${titleAlignClass}`}>
+        <div className={`text-lg font-semibold dark:text-white mb-4 ${titleAlignClass} flex-shrink-0`}>
           {title}
         </div>
       )}
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <div className="transition-[height] duration-300 ease-spring min-w-0 w-full" style={{ height: containerHeight }}>
-          <div ref={linksContainerRef} className={`links flex flex-wrap gap-4 ${linksJustifyClass} min-w-0 w-full`}>
+        <div className={`transition-all duration-300 ease-spring min-w-0 w-full flex-1 ${
+          shouldScrollHorizontally 
+            ? 'overflow-x-auto overflow-y-hidden' 
+            : 'overflow-x-hidden overflow-y-hidden'
+        }`}>
+          <div 
+            ref={linksContainerRef} 
+            className={`links flex gap-4 ${linksJustifyClass} ${
+              shouldScrollHorizontally ? 'flex-nowrap min-w-max' : 'flex-wrap w-full'
+            } items-start`}
+            style={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: shouldScrollHorizontally ? 'nowrap' : 'wrap',
+              maxHeight: '100%'
+            }}
+          >
             <SortableContext items={links.map(link => link.href)}>
               {links.map(link => (
                 <SortableLink 
@@ -117,59 +175,128 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
                 />
               ))}
             </SortableContext>
+            {isEditing && (
+              styleType === 'icon' ? (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setEditingLink(false);
+                  }}
+                  className="relative group w-24 h-full flex items-start justify-center"
+                >
+                  <div className="flex flex-col items-center justify-start gap-2 px-4 py-3 rounded-xl hover:bg-black/30 hover:dark:bg-white/40 w-full h-full cursor-pointer">
+                    <div className="w-[50%] h-[50%] max-w-14 max-h-14 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-full h-full text-neutral-600 dark:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </div>
+                    <span className="text-xs text-center font-medium line-clamp-2 w-full leading-tight text-neutral-600 dark:text-neutral-400">
+                      Add Link
+                    </span>
+                  </div>
+                </button>
+              ) : (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setEditingLink(false);
+                  }}
+                  className="sortable-link"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Add Link
+                </button>
+              )
+            )}
           </div>
         </div>
       </DndContext>
-      {isEditing && (
-        <button
-          onClick={() => setEditingLink(false)}
-          className="sortable-link mx-auto mt-4">
-            + Add Link
-        </button>
-      )}
       <EditLinkModal
         isOpen={editingLink !== null}
         link={editingLink || { href: '', label: '', icon: '' }}
-        onClose={() => setEditingLink(null)}
+        onClose={() => {
+          setEditingLink(null);
+        }}
         onSave={handleSaveLink}
         onDelete={editingLink ? handleDeleteLink : undefined}
       />
-    </>
+    </div>
   );
 }
 
 LinksWidget.Settings = function LinksSettings({ settings = {}, onSettingsChange, onRemove }) {
   const styleType = settings.styleType || 'pill';
+  const widgetHeight = settings.height || 1;
+  const linkRows = settings.linkRows || widgetHeight;
+  const showTitle = settings.showTitle !== false;
+
+  // Clamp linkRows to widgetHeight if widget was resized smaller
+  useEffect(() => {
+    if (linkRows > widgetHeight) {
+      onSettingsChange({ ...settings, linkRows: Math.min(linkRows, widgetHeight) });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [widgetHeight]);
 
   return (
     <div className="w-full md:w-96">
       <h2 className="text-lg font-bold mb-4">Links Settings</h2>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
-            Widget Title
-          </label>
-          <input
-            type="text"
-            value={settings.title || ''}
-            onChange={(e) => onSettingsChange({ ...settings, title: e.target.value })}
-            placeholder="Enter widget title"
-            className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
-              bg-white dark:bg-neutral-800
-              text-black dark:text-white
-              text-sm"
+          <Switch
+            checked={showTitle}
+            onChange={(checked) => onSettingsChange({ ...settings, showTitle: checked })}
+            label="Show title"
           />
+          <div 
+            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+              showTitle ? 'max-h-20 opacity-100 mt-3' : 'max-h-0 opacity-0 mt-0'
+            }`}
+          >
+            <label className="block text-sm font-medium mb-1 text-black dark:text-white">
+              Widget Title
+            </label>
+            <input
+              type="text"
+              value={settings.title || ''}
+              onChange={(e) => onSettingsChange({ ...settings, title: e.target.value })}
+              placeholder="Enter widget title"
+              className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
+                bg-white dark:bg-neutral-800
+                text-black dark:text-white
+                text-sm"
+            />
+          </div>
         </div>
         <div>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={settings.showTitle !== false}
-              onChange={(e) => onSettingsChange({ ...settings, showTitle: e.target.checked })}
-              className="rounded"
-            />
-            <span className="text-sm">Show title</span>
+          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+            Link Rows: {linkRows}
           </label>
+          <input
+            type="range"
+            min="1"
+            max={widgetHeight}
+            value={linkRows}
+            onChange={(e) => {
+              const newRows = parseInt(e.target.value, 10);
+              onSettingsChange({ ...settings, linkRows: newRows });
+            }}
+            className="w-full h-2 bg-neutral-200 dark:bg-neutral-700 rounded-lg appearance-none cursor-pointer
+              [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
+              [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500
+              [&::-webkit-slider-thumb]:cursor-pointer
+              [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4
+              [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500
+              [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+          />
+          <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+            <span>1</span>
+            <span>{widgetHeight}</span>
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium mb-3 text-black dark:text-white">
@@ -194,15 +321,11 @@ LinksWidget.Settings = function LinksSettings({ settings = {}, onSettingsChange,
           />
         </div>
         <div>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={settings.showBackground !== false}
-              onChange={(e) => onSettingsChange({ ...settings, showBackground: e.target.checked })}
-              className="rounded"
-            />
-            <span className="text-sm">Show background</span>
-          </label>
+          <Switch
+            checked={settings.showBackground !== false}
+            onChange={(checked) => onSettingsChange({ ...settings, showBackground: checked })}
+            label="Show background"
+          />
         </div>
         {onRemove && (
           <button

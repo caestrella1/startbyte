@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AlignmentPicker from '../ui/AlignmentPicker';
+import Switch from '../ui/Switch';
 
 export default function TextWidget({ settings = {} }) {
   const text = settings.text || '';
@@ -64,15 +65,11 @@ TextWidget.Settings = function TextSettings({ settings = {}, onSettingsChange, o
           />
         </div>
         <div>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={settings.showBackground !== false}
-              onChange={(e) => onSettingsChange({ ...settings, showBackground: e.target.checked })}
-              className="rounded"
-            />
-            <span className="text-sm">Show background</span>
-          </label>
+          <Switch
+            checked={settings.showBackground !== false}
+            onChange={(checked) => onSettingsChange({ ...settings, showBackground: checked })}
+            label="Show background"
+          />
         </div>
         {onRemove && (
           <button

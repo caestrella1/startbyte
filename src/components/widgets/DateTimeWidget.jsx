@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AlignmentPicker from '../ui/AlignmentPicker';
+import Switch from '../ui/Switch';
 
 export default function DateTimeWidget({ settings = {} }) {
   const [time, setTime] = useState(new Date());
@@ -12,7 +13,9 @@ export default function DateTimeWidget({ settings = {} }) {
     return () => clearInterval(timer);
   }, []);
 
-  const timeZone = settings.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const timeZone = (settings.timeZone && settings.timeZone !== 'auto') 
+    ? settings.timeZone 
+    : Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const timeFormatter = new Intl.DateTimeFormat('en-US', {
     hour: 'numeric',
@@ -82,7 +85,9 @@ const commonTimeZones = [
 ];
 
 DateTimeWidget.Settings = function DateTimeSettings({ settings = {}, onSettingsChange, onRemove }) {
-  const currentTimeZone = settings.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const currentTimeZone = (settings.timeZone && settings.timeZone !== 'auto') 
+    ? settings.timeZone 
+    : Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [customTimeZone, setCustomTimeZone] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
 
@@ -186,48 +191,32 @@ DateTimeWidget.Settings = function DateTimeSettings({ settings = {}, onSettingsC
           />
         </div>
         <div>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={settings.hour12 !== false}
-              onChange={(e) => onSettingsChange({ ...settings, hour12: e.target.checked })}
-              className="rounded"
-            />
-            <span className="text-sm">12-hour format</span>
-          </label>
+          <Switch
+            checked={settings.hour12 !== false}
+            onChange={(checked) => onSettingsChange({ ...settings, hour12: checked })}
+            label="12-hour format"
+          />
         </div>
         <div>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={settings.showWeekday !== false}
-              onChange={(e) => onSettingsChange({ ...settings, showWeekday: e.target.checked })}
-              className="rounded"
-            />
-            <span className="text-sm">Show weekday</span>
-          </label>
+          <Switch
+            checked={settings.showWeekday !== false}
+            onChange={(checked) => onSettingsChange({ ...settings, showWeekday: checked })}
+            label="Show weekday"
+          />
         </div>
         <div>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={settings.showTimeZone || false}
-              onChange={(e) => onSettingsChange({ ...settings, showTimeZone: e.target.checked })}
-              className="rounded"
-            />
-            <span className="text-sm">Show timezone name</span>
-          </label>
+          <Switch
+            checked={settings.showTimeZone || false}
+            onChange={(checked) => onSettingsChange({ ...settings, showTimeZone: checked })}
+            label="Show timezone name"
+          />
         </div>
         <div>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={settings.showBackground !== false}
-              onChange={(e) => onSettingsChange({ ...settings, showBackground: e.target.checked })}
-              className="rounded"
-            />
-            <span className="text-sm">Show background</span>
-          </label>
+          <Switch
+            checked={settings.showBackground !== false}
+            onChange={(checked) => onSettingsChange({ ...settings, showBackground: checked })}
+            label="Show background"
+          />
         </div>
         {onRemove && (
           <button

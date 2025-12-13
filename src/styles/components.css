@@ -83,7 +83,7 @@
 }
 
 @utility widget-container {
-  @apply rounded-4xl p-6 relative h-full w-full flex;
+  @apply rounded-4xl p-6 relative h-full w-full flex overflow-hidden;
 }
 
 @utility widget-container--with-background {

@@ -11,6 +11,7 @@ export default function Modal({ isOpen, onClose, children }) {
 
   const startClosing = (e) => {
     if (e.target === e.currentTarget) {
+      e.stopPropagation();
       setIsClosing(true);
     }
   }
@@ -18,7 +19,10 @@ export default function Modal({ isOpen, onClose, children }) {
   const finishClosing = () => {
     if (isClosing) {
       setIsClosing(false);
-      onClose();
+      // Use setTimeout to prevent event propagation issues
+      setTimeout(() => {
+        onClose();
+      }, 0);
     }
   }
 

@@ -1,10 +1,33 @@
 import React from 'react';
+import SegmentedControl from '../ui/SegmentedControl';
+
+const ROW_HEIGHT_PRESETS = {
+  compact: 100,
+  normal: 120,
+  cozy: 180,
+};
+
+const ROW_HEIGHT_TO_PRESET = {
+  100: 'compact',
+  120: 'normal',
+  180: 'cozy',
+};
 
 export default function GridSection({
   gridColumns,
   onGridColumnsChange,
+  rowHeight,
+  onRowHeightChange,
 }) {
   const cols = gridColumns || 3;
+  const height = rowHeight || 120;
+  
+  // Get current preset or default to 'normal'
+  const currentPreset = ROW_HEIGHT_TO_PRESET[height] || 'normal';
+  
+  const handlePresetChange = (presetId) => {
+    onRowHeightChange(ROW_HEIGHT_PRESETS[presetId]);
+  };
 
   return (
     <div className="space-y-4">
@@ -34,6 +57,24 @@ export default function GridSection({
           <span>1</span>
           <span>8</span>
         </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+          Row Height
+        </label>
+        <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-4">
+          Choose the spacing between widget rows. This determines how tall each widget row will be.
+        </p>
+        <SegmentedControl
+          options={[
+            { id: 'compact', label: 'Compact' },
+            { id: 'normal', label: 'Normal' },
+            { id: 'cozy', label: 'Cozy' },
+          ]}
+          value={currentPreset}
+          onChange={handlePresetChange}
+        />
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AlignmentPicker from '../ui/AlignmentPicker';
 import SegmentedControl from '../ui/SegmentedControl';
+import Switch from '../ui/Switch';
 
 const getWeatherIcon = (iconCode) => {
   return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
@@ -56,8 +57,11 @@ export default function WeatherWidget({ settings = {} }) {
   const [forecast, setForecast] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const location = settings.location || '';
+  const [containerRef, setContainerRef] = useState(null);
+  const [layout, setLayout] = useState('vertical'); // 'vertical' or 'horizontal'
+  const location = (settings.location && settings.location !== 'auto') ? settings.location : '';
   const forecastDays = settings.forecastDays || 0; // 0 = current only, 3, 5, or 10
+  const widgetHeight = settings.height || 1;
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -143,6 +147,40 @@ export default function WeatherWidget({ settings = {} }) {
     fetchWeather();
   }, [location, forecastDays]);
 
+  // Determine layout based on widget height and container size
+  useEffect(() => {
+    if (forecastDays === 0 || !forecast || forecast.length === 0) {
+      setLayout('vertical');
+      return;
+    }
+
+    const updateLayout = () => {
+      if (!containerRef) return;
+      
+      const containerWidth = containerRef.offsetWidth;
+      
+      // If widget is 2+ rows tall, use vertical layout (forecast below)
+      if (widgetHeight >= 2) {
+        setLayout('vertical');
+      } else {
+        // For single row, check if we have enough horizontal space
+        // Current weather takes ~200px, each forecast day ~70px (including gap)
+        const estimatedForecastWidth = forecast.length * 70;
+        const availableWidth = containerWidth - 220; // Reserve space for current weather
+        
+        if (availableWidth >= estimatedForecastWidth) {
+          setLayout('horizontal');
+        } else {
+          setLayout('horizontal-scroll');
+        }
+      }
+    };
+
+    updateLayout();
+    window.addEventListener('resize', updateLayout);
+    return () => window.removeEventListener('resize', updateLayout);
+  }, [containerRef, widgetHeight, forecastDays, forecast]);
+
   const horizontalAlign = settings.horizontalAlign || 'center';
   const justifyClass = horizontalAlign === 'left' ? 'justify-start' : 
                        horizontalAlign === 'right' ? 'justify-end' : 'justify-center';
@@ -190,10 +228,16 @@ export default function WeatherWidget({ settings = {} }) {
     return dateObj.toLocaleDateString('en-US', { weekday: 'short' });
   };
 
+  const isVerticalLayout = layout === 'vertical';
+  const isScrollable = layout === 'horizontal-scroll';
+
   return (
-    <div className={`flex flex-col ${justifyClass} gap-3`}>
+    <div 
+      ref={setContainerRef}
+      className={`flex ${isVerticalLayout ? 'flex-col' : 'flex-row items-center'} ${justifyClass} gap-3 h-full w-full min-w-0`}
+    >
       {/* Current Weather */}
-      <div className={`flex items-center ${justifyClass} gap-3`}>
+      <div className={`flex items-center ${justifyClass} gap-3 ${isVerticalLayout ? 'w-full' : 'flex-shrink-0'}`}>
         {weather.weather[0]?.icon && (
           <img 
             src={getWeatherIcon(weather.weather[0].icon)} 
@@ -220,9 +264,11 @@ export default function WeatherWidget({ settings = {} }) {
 
       {/* Forecast */}
       {forecast && forecast.length > 0 && (
-        <div className={`flex ${justifyClass} gap-2 flex-wrap`}>
+        <div 
+          className={`flex flex-row gap-2 pl-3 ${isVerticalLayout ? `w-full flex-wrap ${justifyClass}` : isScrollable ? 'overflow-x-auto min-w-0 flex-1' : `flex-wrap min-w-0 ${justifyClass}`}`}
+        >
           {forecast.map((day, index) => (
-            <div key={index} className="flex flex-col items-center gap-1 px-2 py-1 rounded-lg bg-white/50 dark:bg-neutral-800/50">
+            <div key={index} className="flex flex-col items-center gap-1 px-4 py-1 border-l border-neutral-300 dark:border-neutral-400/30 flex-shrink-0 w-20">
               <div className="text-xs text-neutral-600 dark:text-neutral-400">
                 {getDayName(day.date)}
               </div>
@@ -248,8 +294,9 @@ export default function WeatherWidget({ settings = {} }) {
 }
 
 WeatherWidget.Settings = function WeatherSettings({ settings = {}, onSettingsChange, onRemove }) {
-  const [locationInput, setLocationInput] = useState(settings.location || '');
-  const [useCurrentLocation, setUseCurrentLocation] = useState(!settings.location);
+  const effectiveLocation = (settings.location && settings.location !== 'auto') ? settings.location : '';
+  const [locationInput, setLocationInput] = useState(effectiveLocation);
+  const [useCurrentLocation, setUseCurrentLocation] = useState(!effectiveLocation);
 
   const forecastOptions = [
     { id: '0', label: 'Current only' },
@@ -287,15 +334,11 @@ WeatherWidget.Settings = function WeatherSettings({ settings = {}, onSettingsCha
             Location
           </label>
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={useCurrentLocation}
-                onChange={(e) => handleUseCurrentLocation(e.target.checked)}
-                className="rounded"
-              />
-              <span className="text-sm">Use current location</span>
-            </div>
+            <Switch
+              checked={useCurrentLocation}
+              onChange={handleUseCurrentLocation}
+              label="Use current location"
+            />
             {!useCurrentLocation && (
               <input
                 type="text"
@@ -338,15 +381,11 @@ WeatherWidget.Settings = function WeatherSettings({ settings = {}, onSettingsCha
           />
         </div>
         <div>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={settings.showBackground !== false}
-              onChange={(e) => onSettingsChange({ ...settings, showBackground: e.target.checked })}
-              className="rounded"
-            />
-            <span className="text-sm">Show background</span>
-          </label>
+          <Switch
+            checked={settings.showBackground !== false}
+            onChange={(checked) => onSettingsChange({ ...settings, showBackground: checked })}
+            label="Show background"
+          />
         </div>
         {onRemove && (
           <button

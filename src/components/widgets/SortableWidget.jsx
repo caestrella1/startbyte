@@ -131,7 +131,7 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
           id={widget.id}
           type={widget.type}
           component={widgetDef.component}
-          settings={widget.settings || {}}
+          settings={{ ...(widget.settings || {}), id: widget.id }}
           onSettingsChange={(newSettings) => onWidgetSettingsChange(widget.id, newSettings)}
           onRemove={() => onWidgetRemove(widget.id)}
           isEditing={isEditing}
