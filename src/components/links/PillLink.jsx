@@ -4,7 +4,7 @@ export default function PillLink({ link, commonProps, isEditing, onEdit }) {
     const content = (
         <div className="relative group">
             {isEditing ? (
-                <div {...commonProps} className="sortable-link is-editing">
+                <div {...commonProps} className="sortable-link">
                     {link.icon && (<img src={link.icon} alt={link.label} className="w-5 h-5" />)}
                     {link.label}
                 </div>

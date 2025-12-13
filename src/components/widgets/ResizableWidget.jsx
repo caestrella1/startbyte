@@ -92,6 +92,9 @@ export default function ResizableWidget({
     >
       {children}
       {isEditing && (
+        <div className="widget-grabber" />
+      )}
+      {isEditing && (
         <div className="absolute inset-0 pointer-events-none group-hover:pointer-events-auto z-30">
           <div
             onMouseDown={(e) => handleMouseDown(e, 'nw')}

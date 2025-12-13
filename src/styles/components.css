@@ -77,3 +77,25 @@
     text-left text-black dark:text-white
     border border-neutral-500 dark:border-white/10;
 }
+
+@utility widget-edit-border {
+  @apply border-4 border-neutral-300/60 dark:border-neutral-400/30;
+}
+
+@utility widget-container {
+  @apply rounded-4xl p-6 relative h-full w-full flex;
+}
+
+@utility widget-container--with-background {
+  @apply bg-white/70 dark:bg-neutral-900/30 shadow-lg backdrop-blur-xl;
+}
+
+@utility widget-container--with-background-default {
+  @apply border border-neutral-500 dark:border-white/10;
+}
+
+@utility widget-grabber {
+  @apply absolute z-10 pointer-events-none dark:border-neutral-100
+  border-b-4 border-r-4 w-8 h-8 rounded-br-4xl bottom-0 right-0;
+  animation: borderPulse 2s ease-in-out infinite;
+}

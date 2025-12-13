@@ -6,7 +6,7 @@ export default function IconLink({ link, commonProps, isEditing, onEdit }) {
       {isEditing ? (
         <div
           {...commonProps}
-          className="is-editing flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-black/30 hover:dark:bg-white/40"
+          className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-black/30 hover:dark:bg-white/40"
         >
           <img src={link.icon} alt={link.label} className="w-12 h-12" />
           <span className="text-xs text-center font-medium truncate w-full">

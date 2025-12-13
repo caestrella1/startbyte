@@ -94,32 +94,38 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
         ref={setNodeRef}
         style={style}
         onClick={handleContainerClick}
-        className={`rounded-2xl p-6 relative group h-full w-full flex ${horizontalClasses[horizontalAlign]} ${verticalClasses[verticalAlign]} ${
-          isEditing && hasSettings ? 'is-editing cursor-pointer' : isEditing ? 'is-editing' : ''
+        className={`widget-container group ${horizontalClasses[horizontalAlign]} ${verticalClasses[verticalAlign]} ${
+          isEditing && hasSettings ? 'cursor-pointer' : ''
         } ${
-          showBackground 
-            ? 'bg-white/70 dark:bg-neutral-900/30 shadow-lg backdrop-blur-xl border border-neutral-500 dark:border-white/10' 
-            : isEditing 
-              ? 'border-2 border-neutral-400 dark:border-neutral-500' 
-              : ''
+          showBackground
+            ? 'widget-container--with-background' 
+            : ''
+        } ${
+          showBackground && !isEditing
+            ? 'widget-container--with-background-default'
+            : isEditing
+            ? 'widget-edit-border'
+            : ''
         }`}
       >
         {isEditing && (
-          <button
-            {...attributes}
-            {...listeners}
-            onClick={(e) => e.stopPropagation()}
-            className="absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center
-              bg-white dark:bg-neutral-600 hover:bg-neutral-200 dark:hover:bg-neutral-700
-              border border-neutral-300/10 dark:border-neutral-400/40
-              text-neutral-600 dark:text-neutral-400 shadow-md
-              opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-grab active:cursor-grabbing"
-            aria-label="Drag widget"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
-            </svg>
-          </button>
+          <>
+            <button
+              {...attributes}
+              {...listeners}
+              onClick={(e) => e.stopPropagation()}
+              className="absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center
+                bg-white dark:bg-neutral-600 hover:bg-neutral-200 dark:hover:bg-neutral-700
+                border border-neutral-300/10 dark:border-neutral-400/40
+                text-neutral-600 dark:text-neutral-400 shadow-md
+                opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-grab active:cursor-grabbing"
+              aria-label="Drag widget"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+              </svg>
+            </button>
+          </>
         )}
         <Widget
           id={widget.id}
