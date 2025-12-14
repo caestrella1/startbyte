@@ -99,3 +99,191 @@
   border-b-4 border-r-4 w-8 h-8 rounded-br-4xl bottom-0 right-0;
   animation: borderPulse 2s ease-in-out infinite;
 }
+
+@utility popover__container {
+  @apply rounded-2xl backdrop-blur z-50
+    bg-white/90 dark:bg-neutral-900/90
+    text-left text-black dark:text-white
+    border border-neutral-500 dark:border-white/10
+    shadow-2xl
+    relative;
+  min-width: 320px;
+  width: 384px;
+  max-width: 500px;
+  min-height: 400px;
+  max-height: 90vh;
+  overflow: visible;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.popover__container__content {
+  @apply p-6 overflow-x-hidden;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow-y: auto;
+}
+
+/* For left/right placements: allow auto-height, only scroll if content exceeds max-height */
+.popover__container--auto-height {
+  height: auto;
+}
+
+.popover__container--auto-height .popover__container__content {
+  flex: 0 1 auto;
+  overflow-y: auto; /* Auto: only show scrollbar when content exceeds max-height */
+  max-height: calc(90vh - 48px); /* 90vh minus padding, enable scroll if exceeded */
+}
+
+.popover__container__content * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.popover__container__content input,
+.popover__container__content textarea,
+.popover__container__content select,
+.popover__container__content button {
+  max-width: 100%;
+}
+
+.popover__container--bottom::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 9px solid rgb(115 115 115);
+  z-index: 1;
+}
+
+.popover__container--bottom::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid rgba(255, 255, 255, 0.9);
+  z-index: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover__container--bottom::after {
+    border-bottom-color: rgb(23 23 23 / 0.9);
+  }
+}
+
+.popover__container--top::before {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 9px solid rgb(115 115 115);
+  z-index: 1;
+}
+
+.popover__container--top::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid rgba(255, 255, 255, 0.9);
+  z-index: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover__container--top::after {
+    border-top-color: rgb(23 23 23 / 0.9);
+  }
+}
+
+.popover__container--right::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-right: 9px solid rgb(115 115 115);
+  z-index: 1;
+}
+
+.popover__container--right::after {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid rgba(255, 255, 255, 0.9);
+  z-index: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover__container--right::after {
+    border-right-color: rgb(23 23 23 / 0.9);
+  }
+}
+
+.popover__container--left::before {
+  content: '';
+  position: absolute;
+  right: -9px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 9px solid rgb(115 115 115);
+  z-index: 1;
+}
+
+.popover__container--left::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid rgba(255, 255, 255, 0.9);
+  z-index: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover__container--left::after {
+    border-left-color: rgb(23 23 23 / 0.9);
+  }
+}

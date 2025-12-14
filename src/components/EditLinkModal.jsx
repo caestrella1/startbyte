@@ -24,8 +24,13 @@ export default function EditLinkModal({ isOpen, link, onClose, onSave, onDelete 
         setHref(link.href);
         setIcon(link.icon);
         
-        // Detect if the icon is a favicon
-        if (!link.icon) {
+        // Use iconType from link if provided, otherwise detect it
+        if (link.iconType) {
+            setIconType(link.iconType);
+        } else if (!link.icon && !link.href) {
+            // New link with no data - default to favicon
+            setIconType('favicon');
+        } else if (!link.icon) {
             setIconType('none');
         } else if (link.href) {
             try {

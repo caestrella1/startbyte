@@ -17,12 +17,18 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
   const widgetId = settings.id || 'links';
   const [links, setLinks] = useState(() => {
     const saved = localStorage.getItem(`linkOrder-${widgetId}`);
+    let linkList;
     if (saved) {
-      return JSON.parse(saved);
+      linkList = JSON.parse(saved);
+    } else {
+      // Get default links from widget settings or fallback to defaults.json
+      linkList = settings.defaultLinks || defaultConfig.widgets.find(w => w.type === 'links')?.settings?.defaultLinks || [];
     }
-    // Get default links from widget settings or fallback to defaults.json
-    const defaultLinks = settings.defaultLinks || defaultConfig.widgets.find(w => w.type === 'links')?.settings?.defaultLinks || [];
-    return defaultLinks;
+    // Ensure all links have a unique ID (for backward compatibility)
+    return linkList.map((link, index) => ({
+      ...link,
+      id: link.id || `${link.href}-${index}-${Date.now()}`
+    }));
   });
   const [editingLink, setEditingLink] = useState(null);
   const linksContainerRef = useRef(null);
@@ -108,11 +114,14 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
+    if (active.id !== over?.id) {
       setLinks((items) => {
-        const oldIndex = items.findIndex((item) => item.href === active.id);
-        const newIndex = items.findIndex((item) => item.href === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        if (oldIndex !== -1 && newIndex !== -1) {
+          return arrayMove(items, oldIndex, newIndex);
+        }
+        return items;
       });
     }
   };
@@ -120,16 +129,21 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
   const handleSaveLink = (updatedLink) => {
     if (editingLink) {
       setLinks(prev => prev.map(link => 
-        link.href === editingLink.href ? updatedLink : link
+        link.id === editingLink.id ? { ...updatedLink, id: link.id } : link
       ));
     } else {
-      setLinks(prev => [...prev, updatedLink]);
+      // Generate a unique ID for new links
+      const newLink = {
+        ...updatedLink,
+        id: `${updatedLink.href}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      };
+      setLinks(prev => [...prev, newLink]);
     }
     setEditingLink(null);
   };
 
   const handleDeleteLink = (linkToDelete) => {
-    setLinks(prev => prev.filter(link => link.href !== linkToDelete.href));
+    setLinks(prev => prev.filter(link => link.id !== linkToDelete.id));
   };
 
   const horizontalAlign = settings.horizontalAlign || 'center';
@@ -164,10 +178,10 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
               maxHeight: '100%'
             }}
           >
-            <SortableContext items={links.map(link => link.href)}>
+            <SortableContext items={links.map(link => link.id)}>
               {links.map(link => (
                 <SortableLink 
-                  key={link.href}
+                  key={link.id}
                   link={link}
                   isEditing={isEditing}
                   styleType={styleType}
@@ -217,7 +231,7 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
       </DndContext>
       <EditLinkModal
         isOpen={editingLink !== null}
-        link={editingLink || { href: '', label: '', icon: '' }}
+        link={editingLink || { href: '', label: '', icon: '', iconType: 'favicon' }}
         onClose={() => {
           setEditingLink(null);
         }}

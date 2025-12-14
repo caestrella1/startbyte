@@ -69,6 +69,7 @@ export default function App() {
     const saved = localStorage.getItem('rowHeight');
     return saved ? parseInt(saved) : defaultConfig.rowHeight;
   });
+  const [currentlyEditedWidgetId, setCurrentlyEditedWidgetId] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('widgets', JSON.stringify(widgets));
@@ -363,6 +364,9 @@ export default function App() {
           isEditing={isEditing}
           gridColumns={gridColumns}
           rowHeight={rowHeight}
+          currentlyEditedWidgetId={currentlyEditedWidgetId}
+          onWidgetSettingsOpen={(widgetId) => setCurrentlyEditedWidgetId(widgetId)}
+          onWidgetSettingsClose={() => setCurrentlyEditedWidgetId(null)}
         />
       </div>
       {/* Floating action buttons */}

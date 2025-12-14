@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Widget from './Widget';
 import ResizableWidget from './ResizableWidget';
 import { widgetRegistry } from './widgetRegistry';
-import Modal from '../ui/Modal';
+import Popover from '../ui/Popover';
 
-export default function SortableWidget({ widget, onWidgetSettingsChange, onWidgetRemove, isEditing = false, gridColumns = 3 }) {
+export default function SortableWidget({ widget, onWidgetSettingsChange, onWidgetRemove, isEditing = false, gridColumns = 3, currentlyEditedWidgetId = null, onWidgetSettingsOpen = null, onWidgetSettingsClose = null }) {
   const {
     attributes,
     listeners,
@@ -20,11 +20,18 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
   });
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const widgetContainerRef = useRef(null);
 
+  // Dim widget if another widget's popover is open
+  const shouldDim = currentlyEditedWidgetId !== null && currentlyEditedWidgetId !== widget.id;
+  
+  // Calculate opacity: dragging takes precedence, then dimming
+  const opacity = isDragging ? 0.5 : shouldDim ? 0.2 : 1;
+  
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
+    transition: transition || 'opacity 0.2s ease-in-out',
+    opacity,
   };
 
   const widgetDef = widgetRegistry[widget.type];
@@ -91,10 +98,13 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
       gridColumns={gridColumns}
     >
       <div
-        ref={setNodeRef}
+        ref={(node) => {
+          setNodeRef(node);
+          widgetContainerRef.current = node;
+        }}
         style={style}
         onClick={handleContainerClick}
-        className={`widget-container group ${horizontalClasses[horizontalAlign]} ${verticalClasses[verticalAlign]} ${
+        className={`widget-container group transition-opacity duration-200 ${horizontalClasses[horizontalAlign]} ${verticalClasses[verticalAlign]} ${
           isEditing && hasSettings ? 'cursor-pointer' : ''
         } ${
           showBackground
@@ -137,7 +147,23 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
           isEditing={isEditing}
         />
         {hasSettings && (
-          <Modal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)}>
+          <Popover 
+            isOpen={isSettingsOpen} 
+            onClose={() => {
+              setIsSettingsOpen(false);
+              // Notify parent immediately when closing
+              if (onWidgetSettingsClose) {
+                onWidgetSettingsClose();
+              }
+            }}
+            anchorElement={widgetContainerRef.current}
+            onOpenChange={(isOpen) => {
+              // Notify parent when popover opens
+              if (isOpen && onWidgetSettingsOpen) {
+                onWidgetSettingsOpen(widget.id);
+              }
+            }}
+          >
             <widgetDef.component.Settings
               settings={widget.settings || {}}
               onSettingsChange={(newSettings) => {
@@ -145,7 +171,7 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
               }}
               onRemove={() => onWidgetRemove(widget.id)}
             />
-          </Modal>
+          </Popover>
         )}
       </div>
     </ResizableWidget>

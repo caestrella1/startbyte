@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { DndContext, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { SortableContext, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable';
 import SortableWidget from './widgets/SortableWidget';
 
-export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRemove, onWidgetReorder, isEditing = false, gridColumns = 3, rowHeight = 120 }) {
+export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRemove, onWidgetReorder, isEditing = false, gridColumns = 3, rowHeight = 120, currentlyEditedWidgetId = null, onWidgetSettingsOpen = null, onWidgetSettingsClose = null }) {
   const gridRef = useRef(null);
+  const [actualColumns, setActualColumns] = React.useState(1);
   const cols = Number(gridColumns) || 3;
 
   const sensors = useSensors(
@@ -45,6 +46,9 @@ export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRe
         columns = 1;
       }
       
+      // Update actual columns state
+      setActualColumns(columns);
+      
       // Apply the grid template columns and rows
       gridRef.current.style.gridTemplateColumns = `repeat(${columns}, minmax(0, 1fr))`;
       gridRef.current.style.gridAutoRows = `${rowHeight}px`;
@@ -75,7 +79,10 @@ export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRe
               onWidgetSettingsChange={onWidgetSettingsChange}
               onWidgetRemove={onWidgetRemove}
               isEditing={isEditing}
-              gridColumns={gridColumns}
+              gridColumns={actualColumns}
+              currentlyEditedWidgetId={currentlyEditedWidgetId}
+              onWidgetSettingsOpen={onWidgetSettingsOpen}
+              onWidgetSettingsClose={onWidgetSettingsClose}
             />
           ))}
         </div>

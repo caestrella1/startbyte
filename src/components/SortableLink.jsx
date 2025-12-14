@@ -13,7 +13,7 @@ const SortableLink = ({ link, isEditing, styleType, onEdit }) => {
     transition,
     isDragging,
   } = useSortable({
-    id: link.href,
+    id: link.id || link.href, // Fallback to href for backward compatibility
     disabled: !isEditing,
     // animateLayoutChanges: () => true,
   });
