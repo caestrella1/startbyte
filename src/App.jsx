@@ -65,9 +65,13 @@ export default function App() {
     const saved = localStorage.getItem('gridColumns');
     return saved ? parseInt(saved) : defaultConfig.gridColumns;
   });
-  const [rowHeight, setRowHeight] = useState(() => {
-    const saved = localStorage.getItem('rowHeight');
-    return saved ? parseInt(saved) : defaultConfig.rowHeight;
+  const [widgetAlignmentHorizontal, setWidgetAlignmentHorizontal] = useState(() => {
+    const saved = localStorage.getItem('widgetAlignmentHorizontal');
+    return saved || defaultConfig.widgetAlignmentHorizontal || 'left';
+  });
+  const [widgetAlignmentVertical, setWidgetAlignmentVertical] = useState(() => {
+    const saved = localStorage.getItem('widgetAlignmentVertical');
+    return saved || defaultConfig.widgetAlignmentVertical || 'center';
   });
   const [currentlyEditedWidgetId, setCurrentlyEditedWidgetId] = useState(null);
 
@@ -118,8 +122,12 @@ export default function App() {
   }, [gridColumns]);
 
   useEffect(() => {
-    localStorage.setItem('rowHeight', rowHeight.toString());
-  }, [rowHeight]);
+    localStorage.setItem('widgetAlignmentHorizontal', widgetAlignmentHorizontal);
+  }, [widgetAlignmentHorizontal]);
+
+  useEffect(() => {
+    localStorage.setItem('widgetAlignmentVertical', widgetAlignmentVertical);
+  }, [widgetAlignmentVertical]);
 
   // Clamp widget widths when grid size changes
   useEffect(() => {
@@ -154,6 +162,7 @@ export default function App() {
       type: widgetType,
       settings: {},
     };
+    // Always add to the end (right of last widget)
     setWidgets([...widgets, newWidget]);
   };
 
@@ -165,6 +174,10 @@ export default function App() {
 
   const handleWidgetRemove = (widgetId) => {
     setWidgets(widgets.filter(w => w.id !== widgetId));
+    // Clear the edited widget ID if the deleted widget was being edited
+    if (currentlyEditedWidgetId === widgetId) {
+      setCurrentlyEditedWidgetId(null);
+    }
   };
 
   const handleWidgetReorder = (newWidgets) => {
@@ -205,7 +218,8 @@ export default function App() {
     
     // Reset grid settings
     setGridColumns(defaultConfig.gridColumns);
-    setRowHeight(defaultConfig.rowHeight);
+    setWidgetAlignmentHorizontal(defaultConfig.widgetAlignmentHorizontal || 'left');
+    setWidgetAlignmentVertical(defaultConfig.widgetAlignmentVertical || 'center');
     
     // Clear localStorage
     localStorage.removeItem('widgets');
@@ -213,7 +227,8 @@ export default function App() {
     localStorage.removeItem('backgroundType');
     localStorage.removeItem('customSolidColor');
     localStorage.removeItem('gridColumns');
-    localStorage.removeItem('rowHeight');
+    localStorage.removeItem('widgetAlignmentHorizontal');
+    localStorage.removeItem('widgetAlignmentVertical');
     localStorage.removeItem('customGradientColors');
     localStorage.removeItem('backgroundBlur');
     localStorage.removeItem('backgroundOverlay');
@@ -233,7 +248,8 @@ export default function App() {
       backgroundBlur: backgroundBlur,
       backgroundOverlay: backgroundOverlay,
       gridColumns: gridColumns,
-      rowHeight: rowHeight,
+      widgetAlignmentHorizontal: widgetAlignmentHorizontal,
+      widgetAlignmentVertical: widgetAlignmentVertical,
       // Collect links data for all links widgets
       linksData: {},
       // Search provider (if stored globally)
@@ -317,9 +333,6 @@ export default function App() {
           if (importData.gridColumns !== undefined) {
             setGridColumns(importData.gridColumns);
           }
-          if (importData.rowHeight !== undefined) {
-            setRowHeight(importData.rowHeight);
-          }
 
           // Import links data
           if (importData.linksData) {
@@ -345,7 +358,13 @@ export default function App() {
   };
 
   return (
-    <div className="font-sans text-neutral-900 dark:text-neutral-100 min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="font-sans text-neutral-900 dark:text-neutral-100 min-h-screen flex flex-col relative overflow-hidden"
+      style={{
+        justifyContent: widgetAlignmentVertical === 'top' ? 'flex-start' : 
+                      widgetAlignmentVertical === 'bottom' ? 'flex-end' : 
+                      'center',
+      }}
+    >
       <Background 
         background={background} 
         backgroundType={backgroundType}
@@ -363,7 +382,8 @@ export default function App() {
           onWidgetReorder={handleWidgetReorder}
           isEditing={isEditing}
           gridColumns={gridColumns}
-          rowHeight={rowHeight}
+          widgetAlignmentHorizontal={widgetAlignmentHorizontal}
+          widgetAlignmentVertical={widgetAlignmentVertical}
           currentlyEditedWidgetId={currentlyEditedWidgetId}
           onWidgetSettingsOpen={(widgetId) => setCurrentlyEditedWidgetId(widgetId)}
           onWidgetSettingsClose={() => setCurrentlyEditedWidgetId(null)}
@@ -531,8 +551,10 @@ export default function App() {
         onBackgroundOverlayChange={setBackgroundOverlay}
         gridColumns={gridColumns}
         onGridColumnsChange={setGridColumns}
-        rowHeight={rowHeight}
-        onRowHeightChange={setRowHeight}
+        widgetAlignmentHorizontal={widgetAlignmentHorizontal}
+        onWidgetAlignmentHorizontalChange={setWidgetAlignmentHorizontal}
+        widgetAlignmentVertical={widgetAlignmentVertical}
+        onWidgetAlignmentVerticalChange={setWidgetAlignmentVertical}
         onResetBackground={handleResetBackground}
         onResetAll={handleResetAll}
         onExportSettings={handleExportSettings}

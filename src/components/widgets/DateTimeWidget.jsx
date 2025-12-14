@@ -49,10 +49,10 @@ export default function DateTimeWidget({ settings = {} }) {
           {timeZoneName}
         </div>
       )}
-      <div className="text-6xl font-bold dark:text-white mb-2 opacity-80">
+      <div className="text-4xl font-bold dark:text-white mb-2 opacity-80">
         {timeFormatter.format(time)}
       </div>
-      <div className="text-lg text-neutral-600 dark:text-neutral-400">
+      <div className="text-md text-neutral-600 dark:text-neutral-400">
         {dateFormatter.format(time)}
       </div>
     </div>

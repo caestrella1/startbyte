@@ -6,11 +6,26 @@ import ResizableWidget from './ResizableWidget';
 import { widgetRegistry } from './widgetRegistry';
 import Popover from '../ui/Popover';
 
-export default function SortableWidget({ widget, onWidgetSettingsChange, onWidgetRemove, isEditing = false, gridColumns = 3, currentlyEditedWidgetId = null, onWidgetSettingsOpen = null, onWidgetSettingsClose = null }) {
+export default function SortableWidget({ widget, onWidgetSettingsChange, onWidgetRemove, isEditing = false, gridColumns = 3, currentlyEditedWidgetId = null, onWidgetSettingsOpen = null, onWidgetSettingsClose = null, isDragOverlay = false }) {
+  const widgetDef = widgetRegistry[widget.type];
+  if (!widgetDef) return null;
+
+  const widgetWidth = widget.settings?.width || 1;
+  const width = Math.min(widgetWidth, gridColumns);
+  const height = widget.settings?.height || 1;
+  
+  // Get min/max dimensions from widget registry, with defaults
+  // min defaults to 1, max defaults to gridColumns if null/undefined
+  const minWidth = widgetDef.minWidth ?? 1;
+  const minHeight = widgetDef.minHeight ?? 1;
+  const maxWidth = widgetDef.maxWidth ?? gridColumns;
+  const maxHeight = widgetDef.maxHeight ?? gridColumns;
+
   const {
     attributes,
     listeners,
     setNodeRef,
+    setActivatorNodeRef,
     transform,
     transition,
     isDragging,
@@ -22,33 +37,21 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const widgetContainerRef = useRef(null);
 
-  // Dim widget if another widget's popover is open
-  const shouldDim = currentlyEditedWidgetId !== null && currentlyEditedWidgetId !== widget.id;
+  const opacity = isDragging ? 0.3 : (currentlyEditedWidgetId !== null && currentlyEditedWidgetId !== widget.id ? 0.2 : 1);
   
-  // Calculate opacity: dragging takes precedence, then dimming
-  const opacity = isDragging ? 0.5 : shouldDim ? 0.2 : 1;
-  
-  const style = {
+  const style = isDragOverlay ? {
+    opacity: 1,
+  } : {
     transform: CSS.Transform.toString(transform),
-    transition: transition || 'opacity 0.2s ease-in-out',
+    transition,
     opacity,
   };
-
-  const widgetDef = widgetRegistry[widget.type];
-  if (!widgetDef) return null;
-
-  // Clamp width to current grid size
-  const widgetWidth = widget.settings?.width || 1;
-  const width = Math.min(widgetWidth, gridColumns);
-  const height = widget.settings?.height || 1;
-  const showBackground = widget.settings?.showBackground !== false; // Default to true
+  const showBackground = widget.settings?.showBackground !== false;
   const hasSettings = widgetDef.component.Settings !== undefined;
   
-  // Alignment settings
   const horizontalAlign = widget.settings?.horizontalAlign || 'center';
   const verticalAlign = widget.settings?.verticalAlign || 'center';
   
-  // Map alignment values to Tailwind classes
   const horizontalClasses = {
     left: 'justify-start',
     center: 'justify-center',
@@ -90,10 +93,10 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
       width={width}
       height={height}
       onResize={handleResize}
-      minWidth={1}
-      minHeight={1}
-      maxWidth={gridColumns}
-      maxHeight={3}
+      minWidth={minWidth}
+      minHeight={minHeight}
+      maxWidth={maxWidth}
+      maxHeight={maxHeight}
       isEditing={isEditing}
       gridColumns={gridColumns}
     >
@@ -102,9 +105,9 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
           setNodeRef(node);
           widgetContainerRef.current = node;
         }}
-        style={style}
+        style={{ ...style, direction: 'ltr' }}
         onClick={handleContainerClick}
-        className={`widget-container group transition-opacity duration-200 ${horizontalClasses[horizontalAlign]} ${verticalClasses[verticalAlign]} ${
+        className={`widget-container group ${isDragOverlay ? '' : 'transition-opacity duration-200'} ${horizontalClasses[horizontalAlign]} ${verticalClasses[verticalAlign]} ${
           isEditing && hasSettings ? 'cursor-pointer' : ''
         } ${
           showBackground
@@ -118,24 +121,23 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
             : ''
         }`}
       >
-        {isEditing && (
-          <>
-            <button
-              {...attributes}
-              {...listeners}
-              onClick={(e) => e.stopPropagation()}
-              className="absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center
-                bg-white dark:bg-neutral-600 hover:bg-neutral-200 dark:hover:bg-neutral-700
-                border border-neutral-300/10 dark:border-neutral-400/40
-                text-neutral-600 dark:text-neutral-400 shadow-md
-                opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-grab active:cursor-grabbing"
-              aria-label="Drag widget"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
-              </svg>
-            </button>
-          </>
+        {isEditing && !isDragOverlay && (
+          <button
+            ref={setActivatorNodeRef}
+            {...attributes}
+            {...listeners}
+            onClick={(e) => e.stopPropagation()}
+            className="absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center
+              bg-white dark:bg-neutral-600 hover:bg-neutral-200 dark:hover:bg-neutral-700
+              border border-neutral-300/10 dark:border-neutral-400/40
+              text-neutral-600 dark:text-neutral-400 shadow-md
+              opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-grab active:cursor-grabbing"
+            aria-label="Drag widget"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+            </svg>
+          </button>
         )}
         <Widget
           id={widget.id}
@@ -146,21 +148,17 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
           onRemove={() => onWidgetRemove(widget.id)}
           isEditing={isEditing}
         />
-        {hasSettings && (
+        {hasSettings && !isDragOverlay && (
           <Popover 
             isOpen={isSettingsOpen} 
             onClose={() => {
               setIsSettingsOpen(false);
-              // Notify parent immediately when closing
-              if (onWidgetSettingsClose) {
-                onWidgetSettingsClose();
-              }
+              onWidgetSettingsClose?.();
             }}
             anchorElement={widgetContainerRef.current}
             onOpenChange={(isOpen) => {
-              // Notify parent when popover opens
-              if (isOpen && onWidgetSettingsOpen) {
-                onWidgetSettingsOpen(widget.id);
+              if (isOpen) {
+                onWidgetSettingsOpen?.(widget.id);
               }
             }}
           >

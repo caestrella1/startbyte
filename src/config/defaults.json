@@ -86,7 +86,8 @@
   "customBackgroundImage": null,
   "backgroundBlur": 16,
   "backgroundOverlay": 0.5,
-  "gridColumns": 3,
-  "rowHeight": 120
+  "gridColumns": 6,
+  "widgetAlignmentHorizontal": "left",
+  "widgetAlignmentVertical": "center"
 }
 

@@ -24,8 +24,10 @@ export default function Settings({
   onBackgroundOverlayChange, 
   gridColumns,
   onGridColumnsChange,
-  rowHeight,
-  onRowHeightChange,
+  widgetAlignmentHorizontal,
+  onWidgetAlignmentHorizontalChange,
+  widgetAlignmentVertical,
+  onWidgetAlignmentVerticalChange,
   onResetBackground, 
   onResetAll, 
   onExportSettings, 
@@ -111,8 +113,10 @@ export default function Settings({
         <GridSection
           gridColumns={gridColumns}
           onGridColumnsChange={onGridColumnsChange}
-          rowHeight={rowHeight}
-          onRowHeightChange={onRowHeightChange}
+          widgetAlignmentHorizontal={widgetAlignmentHorizontal}
+          onWidgetAlignmentHorizontalChange={onWidgetAlignmentHorizontalChange}
+          widgetAlignmentVertical={widgetAlignmentVertical}
+          onWidgetAlignmentVerticalChange={onWidgetAlignmentVerticalChange}
         />
       </SettingSection>
 
