@@ -4,11 +4,10 @@ import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers';
 import { SortableContext, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable';
 import SortableWidget from './widgets/SortableWidget';
 
-export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRemove, onWidgetReorder, isEditing = false, gridColumns = 3, widgetAlignmentHorizontal = 'left', widgetAlignmentVertical = 'center', currentlyEditedWidgetId = null, onWidgetSettingsOpen = null, onWidgetSettingsClose = null }) {
+export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRemove, onWidgetReorder, isEditing = false, gridColumnsSmall = 1, gridColumnsMedium = 2, gridColumnsLarge = 6, widgetAlignmentHorizontal = 'left', widgetAlignmentVertical = 'center', currentlyEditedWidgetId = null, onWidgetSettingsOpen = null, onWidgetSettingsClose = null }) {
   const gridRef = useRef(null);
   const [actualColumns, setActualColumns] = React.useState(1);
   const [activeId, setActiveId] = useState(null);
-  const cols = Number(gridColumns) || 3;
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -47,14 +46,14 @@ export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRe
       
       let columns;
       if (width >= 1024) {
-        // Large screens: use the selected column count
-        columns = cols;
+        // Large screens: use the large column count
+        columns = gridColumnsLarge;
       } else if (width >= 640) {
-        // Medium screens: 2 columns
-        columns = 2;
+        // Medium screens: use the medium column count
+        columns = gridColumnsMedium;
       } else {
-        // Small screens: 1 column
-        columns = 1;
+        // Small screens: use the small column count
+        columns = gridColumnsSmall;
       }
       
       // Update actual columns state
@@ -82,7 +81,7 @@ export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRe
     return () => {
       window.removeEventListener('resize', updateGrid);
     };
-  }, [cols]);
+  }, [gridColumnsSmall, gridColumnsMedium, gridColumnsLarge]);
 
   const activeWidget = widgets.find(w => w.id === activeId);
 

@@ -87,6 +87,9 @@
   "backgroundBlur": 16,
   "backgroundOverlay": 0.5,
   "gridColumns": 6,
+  "gridColumnsSmall": 1,
+  "gridColumnsMedium": 2,
+  "gridColumnsLarge": 6,
   "widgetAlignmentHorizontal": "left",
   "widgetAlignmentVertical": "center"
 }

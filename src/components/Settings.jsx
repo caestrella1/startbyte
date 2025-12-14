@@ -22,8 +22,12 @@ export default function Settings({
   onCustomGradientColorsChange, 
   onBackgroundBlurChange, 
   onBackgroundOverlayChange, 
-  gridColumns,
-  onGridColumnsChange,
+  gridColumnsSmall,
+  onGridColumnsSmallChange,
+  gridColumnsMedium,
+  onGridColumnsMediumChange,
+  gridColumnsLarge,
+  onGridColumnsLargeChange,
   widgetAlignmentHorizontal,
   onWidgetAlignmentHorizontalChange,
   widgetAlignmentVertical,
@@ -111,8 +115,12 @@ export default function Settings({
         isTransitioning={isTransitioning}
       >
         <GridSection
-          gridColumns={gridColumns}
-          onGridColumnsChange={onGridColumnsChange}
+          gridColumnsSmall={gridColumnsSmall}
+          onGridColumnsSmallChange={onGridColumnsSmallChange}
+          gridColumnsMedium={gridColumnsMedium}
+          onGridColumnsMediumChange={onGridColumnsMediumChange}
+          gridColumnsLarge={gridColumnsLarge}
+          onGridColumnsLargeChange={onGridColumnsLargeChange}
           widgetAlignmentHorizontal={widgetAlignmentHorizontal}
           onWidgetAlignmentHorizontalChange={onWidgetAlignmentHorizontalChange}
           widgetAlignmentVertical={widgetAlignmentVertical}

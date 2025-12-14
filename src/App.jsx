@@ -61,9 +61,17 @@ export default function App() {
     const saved = localStorage.getItem('backgroundOverlay');
     return saved ? parseFloat(saved) : defaultConfig.backgroundOverlay;
   });
-  const [gridColumns, setGridColumns] = useState(() => {
-    const saved = localStorage.getItem('gridColumns');
-    return saved ? parseInt(saved) : defaultConfig.gridColumns;
+  const [gridColumnsSmall, setGridColumnsSmall] = useState(() => {
+    const saved = localStorage.getItem('gridColumnsSmall');
+    return saved ? parseInt(saved) : (defaultConfig.gridColumnsSmall ?? 1);
+  });
+  const [gridColumnsMedium, setGridColumnsMedium] = useState(() => {
+    const saved = localStorage.getItem('gridColumnsMedium');
+    return saved ? parseInt(saved) : (defaultConfig.gridColumnsMedium ?? 2);
+  });
+  const [gridColumnsLarge, setGridColumnsLarge] = useState(() => {
+    const saved = localStorage.getItem('gridColumnsLarge');
+    return saved ? parseInt(saved) : (defaultConfig.gridColumnsLarge ?? defaultConfig.gridColumns ?? 6);
   });
   const [widgetAlignmentHorizontal, setWidgetAlignmentHorizontal] = useState(() => {
     const saved = localStorage.getItem('widgetAlignmentHorizontal');
@@ -118,8 +126,16 @@ export default function App() {
   }, [backgroundOverlay]);
 
   useEffect(() => {
-    localStorage.setItem('gridColumns', gridColumns.toString());
-  }, [gridColumns]);
+    localStorage.setItem('gridColumnsSmall', gridColumnsSmall.toString());
+  }, [gridColumnsSmall]);
+
+  useEffect(() => {
+    localStorage.setItem('gridColumnsMedium', gridColumnsMedium.toString());
+  }, [gridColumnsMedium]);
+
+  useEffect(() => {
+    localStorage.setItem('gridColumnsLarge', gridColumnsLarge.toString());
+  }, [gridColumnsLarge]);
 
   useEffect(() => {
     localStorage.setItem('widgetAlignmentHorizontal', widgetAlignmentHorizontal);
@@ -129,18 +145,19 @@ export default function App() {
     localStorage.setItem('widgetAlignmentVertical', widgetAlignmentVertical);
   }, [widgetAlignmentVertical]);
 
-  // Clamp widget widths when grid size changes
+  // Clamp widget widths when grid size changes (use largest breakpoint)
   useEffect(() => {
+    const maxGridColumns = Math.max(gridColumnsSmall, gridColumnsMedium, gridColumnsLarge);
     setWidgets(prevWidgets => {
       const updated = prevWidgets.map(widget => {
         const widgetWidth = widget.settings?.width || 1;
-        if (widgetWidth > gridColumns) {
+        if (widgetWidth > maxGridColumns) {
           // Clamp width to new grid size
           return {
             ...widget,
             settings: {
               ...widget.settings,
-              width: gridColumns,
+              width: maxGridColumns,
             },
           };
         }
@@ -154,7 +171,7 @@ export default function App() {
       });
       return hasChanges ? updated : prevWidgets;
     });
-  }, [gridColumns]);
+  }, [gridColumnsSmall, gridColumnsMedium, gridColumnsLarge]);
 
   const handleAddWidget = (widgetType) => {
     const newWidget = {
@@ -217,7 +234,9 @@ export default function App() {
     setBackgroundOverlay(defaultConfig.backgroundOverlay);
     
     // Reset grid settings
-    setGridColumns(defaultConfig.gridColumns);
+    setGridColumnsSmall(defaultConfig.gridColumnsSmall ?? 1);
+    setGridColumnsMedium(defaultConfig.gridColumnsMedium ?? 2);
+    setGridColumnsLarge(defaultConfig.gridColumnsLarge ?? defaultConfig.gridColumns ?? 6);
     setWidgetAlignmentHorizontal(defaultConfig.widgetAlignmentHorizontal || 'left');
     setWidgetAlignmentVertical(defaultConfig.widgetAlignmentVertical || 'center');
     
@@ -247,7 +266,9 @@ export default function App() {
       customBackgroundImage: customBackgroundImage,
       backgroundBlur: backgroundBlur,
       backgroundOverlay: backgroundOverlay,
-      gridColumns: gridColumns,
+      gridColumnsSmall: gridColumnsSmall,
+      gridColumnsMedium: gridColumnsMedium,
+      gridColumnsLarge: gridColumnsLarge,
       widgetAlignmentHorizontal: widgetAlignmentHorizontal,
       widgetAlignmentVertical: widgetAlignmentVertical,
       // Collect links data for all links widgets
@@ -330,8 +351,18 @@ export default function App() {
           if (importData.backgroundOverlay !== undefined) {
             setBackgroundOverlay(importData.backgroundOverlay);
           }
-          if (importData.gridColumns !== undefined) {
-            setGridColumns(importData.gridColumns);
+          if (importData.gridColumnsSmall !== undefined) {
+            setGridColumnsSmall(importData.gridColumnsSmall);
+          }
+          if (importData.gridColumnsMedium !== undefined) {
+            setGridColumnsMedium(importData.gridColumnsMedium);
+          }
+          if (importData.gridColumnsLarge !== undefined) {
+            setGridColumnsLarge(importData.gridColumnsLarge);
+          }
+          // Legacy support: if old gridColumns exists, use it for large
+          if (importData.gridColumns !== undefined && importData.gridColumnsLarge === undefined) {
+            setGridColumnsLarge(importData.gridColumns);
           }
 
           // Import links data
@@ -381,7 +412,9 @@ export default function App() {
           onWidgetRemove={handleWidgetRemove}
           onWidgetReorder={handleWidgetReorder}
           isEditing={isEditing}
-          gridColumns={gridColumns}
+          gridColumnsSmall={gridColumnsSmall}
+          gridColumnsMedium={gridColumnsMedium}
+          gridColumnsLarge={gridColumnsLarge}
           widgetAlignmentHorizontal={widgetAlignmentHorizontal}
           widgetAlignmentVertical={widgetAlignmentVertical}
           currentlyEditedWidgetId={currentlyEditedWidgetId}
@@ -549,8 +582,12 @@ export default function App() {
         onCustomBackgroundChange={setCustomBackgroundImage}
         onBackgroundBlurChange={setBackgroundBlur}
         onBackgroundOverlayChange={setBackgroundOverlay}
-        gridColumns={gridColumns}
-        onGridColumnsChange={setGridColumns}
+        gridColumnsSmall={gridColumnsSmall}
+        onGridColumnsSmallChange={setGridColumnsSmall}
+        gridColumnsMedium={gridColumnsMedium}
+        onGridColumnsMediumChange={setGridColumnsMedium}
+        gridColumnsLarge={gridColumnsLarge}
+        onGridColumnsLargeChange={setGridColumnsLarge}
         widgetAlignmentHorizontal={widgetAlignmentHorizontal}
         onWidgetAlignmentHorizontalChange={setWidgetAlignmentHorizontal}
         widgetAlignmentVertical={widgetAlignmentVertical}
