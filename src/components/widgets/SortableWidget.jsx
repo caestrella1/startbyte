@@ -73,7 +73,7 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
   };
 
   const handleContainerClick = (e) => {
-    if (isEditing && hasSettings) {
+    if (isEditing && hasSettings && !isDragging) {
       // Don't open if clicking on the drag handle
       if (e.target.closest('button[aria-label="Drag widget"]')) {
         return;
@@ -104,11 +104,18 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
         ref={(node) => {
           setNodeRef(node);
           widgetContainerRef.current = node;
+          // Make the container itself the drag activator when in edit mode
+          if (isEditing && !isDragOverlay) {
+            setActivatorNodeRef(node);
+          }
         }}
-        style={{ ...style, direction: 'ltr' }}
+        style={{ ...style, direction: 'ltr', touchAction: isEditing ? 'none' : 'auto' }}
         onClick={handleContainerClick}
+        {...(isEditing && !isDragOverlay ? { ...attributes, ...listeners } : {})}
         className={`widget-container group ${isDragOverlay ? '' : 'transition-opacity duration-200'} ${horizontalClasses[horizontalAlign]} ${verticalClasses[verticalAlign]} ${
-          isEditing && hasSettings ? 'cursor-pointer' : ''
+          isEditing && hasSettings && !isDragging ? 'cursor-pointer' : ''
+        } ${
+          isEditing ? 'cursor-grab active:cursor-grabbing' : ''
         } ${
           showBackground
             ? 'widget-container--with-background' 
@@ -123,18 +130,17 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
       >
         {isEditing && !isDragOverlay && (
           <button
-            ref={setActivatorNodeRef}
-            {...attributes}
-            {...listeners}
             onClick={(e) => e.stopPropagation()}
-            className="absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center
+            style={{ touchAction: 'none', pointerEvents: 'none' }}
+            className="absolute top-2 left-2 w-8 h-8 md:w-6 md:h-6 rounded-full flex items-center justify-center
               bg-white dark:bg-neutral-600 hover:bg-neutral-200 dark:hover:bg-neutral-700
               border border-neutral-300/10 dark:border-neutral-400/40
               text-neutral-600 dark:text-neutral-400 shadow-md
-              opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-grab active:cursor-grabbing"
+              opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10"
             aria-label="Drag widget"
+            tabIndex={-1}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
             </svg>
           </button>

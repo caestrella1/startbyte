@@ -18,22 +18,29 @@ export default function ResizableWidget({
   const [startSize, setStartSize] = useState({ width: 0, height: 0 });
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
-  const handleMouseDown = (e, handle) => {
+  const handleStart = (e, handle) => {
     if (!isEditing) return;
     e.preventDefault();
     e.stopPropagation();
     setIsResizing(true);
     setResizeHandle(handle);
     setStartSize({ width, height });
-    setStartPos({ x: e.clientX, y: e.clientY });
+    
+    // Support both mouse and touch events
+    const clientX = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
+    const clientY = e.clientY ?? e.touches?.[0]?.clientY ?? 0;
+    setStartPos({ x: clientX, y: clientY });
   };
 
   useEffect(() => {
     if (!isResizing) return;
 
-    const handleMouseMove = (e) => {
-      const deltaX = e.clientX - startPos.x;
-      const deltaY = e.clientY - startPos.y;
+    const handleMove = (e) => {
+      // Support both mouse and touch events
+      const clientX = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
+      const clientY = e.clientY ?? e.touches?.[0]?.clientY ?? 0;
+      const deltaX = clientX - startPos.x;
+      const deltaY = clientY - startPos.y;
       
       // Calculate grid units - use actual grid dimensions
       const container = widgetRef.current?.parentElement;
@@ -71,19 +78,24 @@ export default function ResizableWidget({
       }
     };
 
-    const handleMouseUp = () => {
+    const handleEnd = () => {
       setIsResizing(false);
       setResizeHandle(null);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    // Add both mouse and touch event listeners
+    document.addEventListener('mousemove', handleMove);
+    document.addEventListener('mouseup', handleEnd);
+    document.addEventListener('touchmove', handleMove, { passive: false });
+    document.addEventListener('touchend', handleEnd);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('mouseup', handleEnd);
+      document.removeEventListener('touchmove', handleMove);
+      document.removeEventListener('touchend', handleEnd);
     };
-  }, [isResizing, resizeHandle, startPos, startSize, minWidth, minHeight, maxWidth, maxHeight, onResize]);
+  }, [isResizing, resizeHandle, startPos, startSize, minWidth, minHeight, maxWidth, maxHeight, onResize, gridColumns]);
 
   return (
     <div
@@ -96,31 +108,36 @@ export default function ResizableWidget({
     >
       {children}
       {isEditing && (
-        <div className="widget-grabber" />
+        <div 
+          className="widget-grabber"
+          onMouseDown={(e) => handleStart(e, 'se')}
+          onTouchStart={(e) => handleStart(e, 'se')}
+          style={{ cursor: 'se-resize' }}
+        />
       )}
       {isEditing && (
-        <div className="absolute inset-0 pointer-events-none group-hover:pointer-events-auto z-30">
+        <div className="absolute inset-0 pointer-events-none group-hover:pointer-events-auto z-30 hidden md:block">
           <div
-            onMouseDown={(e) => handleMouseDown(e, 'nw')}
-            className="absolute top-0 left-0 w-5 h-5 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto cursor-nw-resize"
+            onMouseDown={(e) => handleStart(e, 'nw')}
+            className="absolute top-0 left-0 w-5 h-5 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 z-30 transition-opacity pointer-events-auto cursor-nw-resize"
           >
             <div className="absolute inset-0 bg-blue-500 rounded-full border-2 border-white dark:border-neutral-800 shadow-lg hover:bg-blue-600" />
           </div>
           <div
-            onMouseDown={(e) => handleMouseDown(e, 'ne')}
-            className="absolute top-0 right-0 w-5 h-5 translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto cursor-ne-resize"
+            onMouseDown={(e) => handleStart(e, 'ne')}
+            className="absolute top-0 right-0 w-5 h-5 translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 z-30 transition-opacity pointer-events-auto cursor-ne-resize"
           >
             <div className="absolute inset-0 bg-blue-500 rounded-full border-2 border-white dark:border-neutral-800 shadow-lg hover:bg-blue-600" />
           </div>
           <div
-            onMouseDown={(e) => handleMouseDown(e, 'sw')}
-            className="absolute bottom-0 left-0 w-5 h-5 -translate-x-1/2 translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto cursor-sw-resize"
+            onMouseDown={(e) => handleStart(e, 'sw')}
+            className="absolute bottom-0 left-0 w-5 h-5 -translate-x-1/2 translate-y-1/2 opacity-0 group-hover:opacity-100 z-30 transition-opacity pointer-events-auto cursor-sw-resize"
           >
             <div className="absolute inset-0 bg-blue-500 rounded-full border-2 border-white dark:border-neutral-800 shadow-lg hover:bg-blue-600" />
           </div>
           <div
-            onMouseDown={(e) => handleMouseDown(e, 'se')}
-            className="absolute bottom-0 right-0 w-5 h-5 translate-x-1/2 translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto cursor-se-resize"
+            onMouseDown={(e) => handleStart(e, 'se')}
+            className="absolute bottom-0 right-0 w-5 h-5 translate-x-1/2 translate-y-1/2 opacity-0 group-hover:opacity-100 z-30 transition-opacity pointer-events-auto cursor-se-resize"
           >
             <div className="absolute inset-0 bg-blue-500 rounded-full border-2 border-white dark:border-neutral-800 shadow-lg hover:bg-blue-600" />
           </div>

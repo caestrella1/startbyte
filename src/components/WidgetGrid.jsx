@@ -12,7 +12,8 @@ export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRe
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        delay: 200,
+        tolerance: 5,
       },
     })
   );
