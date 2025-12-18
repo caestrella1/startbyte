@@ -201,11 +201,11 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
                 >
                   <div className="flex flex-col items-center justify-start gap-2 px-4 py-3 rounded-xl hover:bg-black/30 hover:dark:bg-white/40 w-full h-full cursor-pointer">
                     <div className="w-[50%] h-[50%] max-w-14 max-h-14 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-full h-full text-neutral-600 dark:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-full h-full text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </div>
-                    <span className="text-xs text-center font-medium line-clamp-2 w-full leading-tight text-neutral-600 dark:text-neutral-400">
+                    <span className="text-xs text-center font-medium line-clamp-2 w-full leading-tight text-secondary">
                       Add Link
                     </span>
                   </div>
@@ -279,10 +279,7 @@ LinksWidget.Settings = function LinksSettings({ settings = {}, onSettingsChange,
               value={settings.title || ''}
               onChange={(e) => onSettingsChange({ ...settings, title: e.target.value })}
               placeholder="Enter widget title"
-              className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
-                bg-white dark:bg-neutral-800
-                text-black dark:text-white
-                text-sm"
+              className="form-input"
             />
           </div>
         </div>
@@ -307,7 +304,7 @@ LinksWidget.Settings = function LinksSettings({ settings = {}, onSettingsChange,
               [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500
               [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
           />
-          <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+          <div className="flex justify-between text-xs text-muted mt-1">
             <span>1</span>
             <span>{widgetHeight}</span>
           </div>

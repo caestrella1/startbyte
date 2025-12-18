@@ -30,7 +30,7 @@ export default function AlignmentPicker({ horizontalAlign = 'center', verticalAl
               className={`w-12 h-12 rounded-lg border-2 flex items-center justify-center text-lg transition-colors ${
                 isSelected
                   ? 'bg-blue-500 border-blue-600 text-white'
-                  : 'bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700'
+                  : 'surface border-neutral-300 dark:border-neutral-600 text-icon hover:bg-neutral-100 dark:hover:bg-neutral-700'
               }`}
               aria-label={`${pos.v} ${pos.h}`}
             >

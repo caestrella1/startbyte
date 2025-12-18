@@ -45,14 +45,14 @@ export default function DateTimeWidget({ settings = {} }) {
   return (
     <div className={textAlignClass}>
       {settings.showTimeZone && timeZoneName && (
-        <div className="text-sm text-neutral-500 dark:text-neutral-400 mb-1">
+        <div className="text-sm text-muted mb-1">
           {timeZoneName}
         </div>
       )}
       <div className="text-4xl font-bold dark:text-white mb-2 opacity-80">
         {timeFormatter.format(time)}
       </div>
-      <div className="text-md text-neutral-600 dark:text-neutral-400">
+      <div className="text-md text-secondary">
         {dateFormatter.format(time)}
       </div>
     </div>
@@ -125,10 +125,7 @@ DateTimeWidget.Settings = function DateTimeSettings({ settings = {}, onSettingsC
           <select
             value={showCustomInput ? 'custom' : currentTimeZone}
             onChange={(e) => handleTimeZoneChange(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
-              bg-white dark:bg-neutral-800
-              text-black dark:text-white
-              text-sm"
+            className="form-input--select"
           >
             {commonTimeZones.map(tz => (
               <option key={tz.value} value={tz.value}>

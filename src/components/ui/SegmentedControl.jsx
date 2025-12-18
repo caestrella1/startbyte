@@ -1,4 +1,5 @@
 import React from 'react';
+import './SegmentedControl.css';
 
 export default function SegmentedControl({ options, value, onChange, ...props }) {
   return (

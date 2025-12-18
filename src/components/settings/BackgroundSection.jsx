@@ -111,10 +111,7 @@ export default function BackgroundSection({
                       onBackgroundTypeChange('solid');
                     }
                   }}
-                  className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
-                    bg-white dark:bg-neutral-800
-                    text-black dark:text-white
-                    font-mono text-sm"
+                  className="form-input font-mono"
                   placeholder="#000000"
                 />
               </div>
@@ -172,10 +169,7 @@ export default function BackgroundSection({
                       onBackgroundTypeChange('gradient');
                     }
                   }}
-                  className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
-                    bg-white dark:bg-neutral-800
-                    text-black dark:text-white
-                    font-mono text-sm"
+                  className="form-input font-mono"
                   placeholder="#000000"
                 />
               </div>
@@ -227,10 +221,7 @@ export default function BackgroundSection({
                       onBackgroundTypeChange('gradient');
                     }
                   }}
-                  className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
-                    bg-white dark:bg-neutral-800
-                    text-black dark:text-white
-                    font-mono text-sm"
+                  className="form-input font-mono"
                   placeholder="#ffffff"
                 />
               </div>
@@ -254,10 +245,10 @@ export default function BackgroundSection({
                   bg-neutral-50 dark:bg-neutral-800/50
                   transition-colors flex items-center justify-center gap-2"
               >
-                <svg className="w-5 h-5 text-neutral-600 dark:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                <span className="text-sm text-secondary">
                   Choose Image
                 </span>
               </button>

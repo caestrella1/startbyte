@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import './Popover.css';
 
 export default function Popover({ isOpen, onClose, anchorElement, children, onOpenChange }) {
   const [position, setPosition] = useState({ top: 0, left: 0, placement: 'bottom', maxWidth: 500, maxHeight: null, allowAutoHeight: false });

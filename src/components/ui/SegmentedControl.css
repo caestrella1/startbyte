@@ -1,0 +1,20 @@
+@reference "tailwindcss";
+
+@utility segmented-control {
+  @apply flex w-full text-sm rounded-lg p-0.5
+    bg-neutral-300 dark:bg-neutral-800
+    border border-neutral-400/40 dark:border-neutral-700/40;
+}
+
+@utility segmented-control__option {
+  @apply flex-1 px-3 py-1 rounded-md transition-all
+  hover:bg-neutral-200/30 dark:hover:bg-neutral-700/30
+  text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white;
+}
+
+@utility segmented-control__option--selected {
+  @apply shadow-sm
+  bg-white dark:bg-neutral-700 hover:bg-white/80 dark:hover:bg-neutral-600/80
+  text-black dark:text-white;
+}
+

@@ -135,7 +135,7 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
             className="absolute top-2 left-2 w-8 h-8 md:w-6 md:h-6 rounded-full flex items-center justify-center
               bg-white dark:bg-neutral-600 hover:bg-neutral-200 dark:hover:bg-neutral-700
               border border-neutral-300/10 dark:border-neutral-400/40
-              text-neutral-600 dark:text-neutral-400 shadow-md
+              text-secondary shadow-md
               opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10"
             aria-label="Drag widget"
             tabIndex={-1}

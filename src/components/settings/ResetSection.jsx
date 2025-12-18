@@ -13,7 +13,7 @@ export default function ResetSection({
     <div className="space-y-4">
       <div>
         <h3 className="text-sm font-medium text-black dark:text-white mb-2">Export Settings</h3>
-        <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-3">
+        <p className="text-xs text-secondary mb-3">
           Download all your settings, widgets, and wallpaper configuration as a JSON file.
         </p>
         <button
@@ -35,7 +35,7 @@ export default function ResetSection({
 
       <div>
         <h3 className="text-sm font-medium text-black dark:text-white mb-2">Import Settings</h3>
-        <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-3">
+        <p className="text-xs text-secondary mb-3">
           Import settings from a previously exported JSON file. This will replace your current settings.
         </p>
         <button
@@ -79,7 +79,7 @@ export default function ResetSection({
 
       <div>
         <h3 className="text-sm font-medium text-black dark:text-white mb-2">Reset Wallpaper</h3>
-        <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-3">
+        <p className="text-xs text-secondary mb-3">
           Reset the wallpaper to the default solid black color.
         </p>
         <button
@@ -99,7 +99,7 @@ export default function ResetSection({
 
       <div>
         <h3 className="text-sm font-medium text-black dark:text-white mb-2">Reset All Settings</h3>
-        <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-3">
+        <p className="text-xs text-secondary mb-3">
           Reset all settings including wallpaper and widgets to their default values. This action cannot be undone.
         </p>
         <button

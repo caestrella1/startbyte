@@ -39,10 +39,7 @@ GreetingWidget.Settings = function GreetingSettings({ settings = {}, onSettingsC
             value={settings.name || 'Carlos'}
             onChange={(e) => onSettingsChange({ ...settings, name: e.target.value })}
             placeholder="Enter your name"
-            className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
-              bg-white dark:bg-neutral-800
-              text-black dark:text-white
-              text-sm"
+            className="form-input"
           />
         </div>
         <div>

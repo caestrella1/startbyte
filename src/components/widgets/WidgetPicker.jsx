@@ -22,7 +22,7 @@ export default function WidgetPicker({ isOpen, onClose, onAddWidget }) {
             >
               <div className="font-semibold text-black dark:text-white">{widget.name}</div>
               {widget.description && (
-                <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                <div className="text-sm text-secondary mt-1">
                   {widget.description}
                 </div>
               )}

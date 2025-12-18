@@ -1,0 +1,14 @@
+@reference "tailwindcss";
+
+@utility modal__overlay {
+  @apply fixed inset-0 min-h-screen min-w-screen bg-black/60 flex items-center justify-center z-50;
+}
+
+@utility modal__container {
+  @apply rounded-2xl p-6 backdrop-blur
+    bg-white/70 dark:bg-neutral-900/70
+    text-left text-black dark:text-white
+    border border-neutral-500 dark:border-white/10;
+  animation: var(--animate-pop);
+}
+

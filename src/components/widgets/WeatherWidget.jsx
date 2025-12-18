@@ -192,7 +192,7 @@ export default function WeatherWidget({ settings = {} }) {
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
         </svg>
-        <span className="text-neutral-600 dark:text-neutral-400">Loading weather...</span>
+        <span className="text-secondary">Loading weather...</span>
       </div>
     );
   }
@@ -249,7 +249,7 @@ export default function WeatherWidget({ settings = {} }) {
           <div className="text-3xl font-bold dark:text-white">
             {Math.round(weather.main.temp)}°F
           </div>
-          <div className="text-sm text-neutral-600 dark:text-neutral-400">
+          <div className="text-sm text-secondary">
             <a 
               href={`https://openweathermap.org/city/${weather.id}`} 
               target="_blank" 
@@ -269,7 +269,7 @@ export default function WeatherWidget({ settings = {} }) {
         >
           {forecast.map((day, index) => (
             <div key={index} className="flex flex-col items-center gap-1 px-4 py-1 border-l border-neutral-300 dark:border-neutral-400/30 flex-shrink-0 w-20">
-              <div className="text-xs text-neutral-600 dark:text-neutral-400">
+              <div className="text-xs text-secondary">
                 {getDayName(day.date)}
               </div>
               {day.icon && (
@@ -282,7 +282,7 @@ export default function WeatherWidget({ settings = {} }) {
               <div className="text-xs font-semibold dark:text-white">
                 {day.high}°
               </div>
-              <div className="text-xs text-neutral-500 dark:text-neutral-400">
+              <div className="text-xs text-muted">
                 {day.low}°
               </div>
             </div>
@@ -345,14 +345,11 @@ WeatherWidget.Settings = function WeatherSettings({ settings = {}, onSettingsCha
                 value={locationInput}
                 onChange={(e) => handleLocationChange(e.target.value)}
                 placeholder="e.g., New York, London, Tokyo"
-                className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
-                  bg-white dark:bg-neutral-800
-                  text-black dark:text-white
-                  text-sm"
+                className="form-input"
               />
             )}
             {!useCurrentLocation && (
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              <p className="text-xs text-muted">
                 Enter a city name (e.g., "New York", "London, UK", "Tokyo, Japan")
               </p>
             )}

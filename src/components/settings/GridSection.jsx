@@ -25,7 +25,7 @@ export default function GridSection({
         <label className="block text-sm font-medium mb-3 text-black dark:text-white">
           Grid Columns (Small: &lt;640px): {smallCols}
         </label>
-        <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-4">
+        <p className="text-xs text-secondary mb-4">
           Number of columns for small screens (mobile devices).
         </p>
         <input
@@ -43,7 +43,7 @@ export default function GridSection({
             [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500
             [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
         />
-        <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+        <div className="flex justify-between text-xs text-muted mt-1">
           <span>1</span>
           <span>4</span>
         </div>
@@ -53,7 +53,7 @@ export default function GridSection({
         <label className="block text-sm font-medium mb-3 text-black dark:text-white">
           Grid Columns (Medium: 640px-1023px): {mediumCols}
         </label>
-        <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-4">
+        <p className="text-xs text-secondary mb-4">
           Number of columns for medium screens (tablets).
         </p>
         <input
@@ -71,7 +71,7 @@ export default function GridSection({
             [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500
             [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
         />
-        <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+        <div className="flex justify-between text-xs text-muted mt-1">
           <span>2</span>
           <span>6</span>
         </div>
@@ -81,7 +81,7 @@ export default function GridSection({
         <label className="block text-sm font-medium mb-3 text-black dark:text-white">
           Grid Columns (Large: ≥1024px): {largeCols}
         </label>
-        <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-4">
+        <p className="text-xs text-secondary mb-4">
           Number of columns for large screens (desktops). Widgets will be square (height equals width).
         </p>
         <input
@@ -99,7 +99,7 @@ export default function GridSection({
             [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500
             [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
         />
-        <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+        <div className="flex justify-between text-xs text-muted mt-1">
           <span>3</span>
           <span>10</span>
         </div>
@@ -109,7 +109,7 @@ export default function GridSection({
         <label className="block text-sm font-medium mb-3 text-black dark:text-white">
           Horizontal Alignment
         </label>
-        <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-4">
+        <p className="text-xs text-secondary mb-4">
           Align widgets to the left or right of the grid container.
         </p>
         <SegmentedControl
@@ -126,7 +126,7 @@ export default function GridSection({
         <label className="block text-sm font-medium mb-3 text-black dark:text-white">
           Vertical Alignment
         </label>
-        <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-4">
+        <p className="text-xs text-secondary mb-4">
           Align widgets to the top, center, or bottom of the grid container.
         </p>
         <SegmentedControl

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import './Modal.css';
 
 export default function Modal({ isOpen, onClose, children }) {
   const [isClosing, setIsClosing] = useState(false);

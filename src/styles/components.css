@@ -2,20 +2,39 @@
   grid-template-rows: 1fr;
 }
 
-@utility sortable-link {
-  @apply no-underline px-4 py-1.5 rounded-xl shadow transition flex items-center gap-2 relative
-    text-sm text-black dark:text-white font-semibold dark:hover:text-black
-    bg-white/70 dark:bg-neutral-700/60 hover:bg-white hover:dark:bg-white 
-    border border-neutral-700/10 dark:border-neutral-300/10 
-    focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-neutral-800;
+/* ========================================
+   Surface/Container Utilities
+   ======================================== */
+
+@utility surface {
+  @apply bg-white dark:bg-neutral-800;
 }
 
-@utility sortable-link__edit-button {
-  @apply w-6 h-6 rounded-full flex items-center justify-center backdrop-blur transition
-    bg-white dark:bg-neutral-600 hover:bg-blue-600 
-    border border-neutral-300/10 dark:border-neutral-400/40
-    text-black hover:text-white dark:text-white shadow-lg;
+@utility surface--elevated {
+  @apply bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm;
 }
+
+/* ========================================
+   Floating Action Button Utilities
+   ======================================== */
+
+@utility fab {
+  @apply w-12 h-12 rounded-full 
+    bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm
+    shadow-lg border border-neutral-200 dark:border-neutral-700
+    flex items-center justify-center
+    hover:bg-white dark:hover:bg-neutral-700
+    transition-colors
+    focus:outline-none focus:ring-2 focus:ring-blue-400;
+}
+
+@utility fab-icon {
+  @apply w-6 h-6 text-icon;
+}
+
+/* ========================================
+   Button Utilities
+   ======================================== */
 
 @utility btn-primary {
   @apply px-4 py-1 rounded-full transition
@@ -36,47 +55,28 @@
   text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500
 }
 
-@utility input {
-  @apply w-full px-3 py-2 transition-all duration-400
-    border border-neutral-400/40 dark:border-neutral-600 rounded-lg
-    bg-neutral-400/60 hover:bg-neutral-400 dark:bg-neutral-700/40 dark:hover:bg-neutral-600/40 
-    text-base text-neutral-900 dark:text-neutral-100
-    placeholder:text-black/40 dark:placeholder:text-neutral-400/60
-    focus:outline-none focus:ring-2 focus:ring-blue-400/60;
+/* ========================================
+   Link Utilities
+   ======================================== */
+
+@utility sortable-link {
+  @apply no-underline px-4 py-1.5 rounded-xl shadow transition flex items-center gap-2 relative
+    text-sm text-black dark:text-white font-semibold dark:hover:text-black
+    bg-white/70 dark:bg-neutral-700/60 hover:bg-white hover:dark:bg-white 
+    border border-neutral-700/10 dark:border-neutral-300/10 
+    focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-neutral-800;
 }
 
-@utility input--search {
-  @apply pl-14 pr-24 rounded-full;
+@utility sortable-link__edit-button {
+  @apply w-6 h-6 rounded-full flex items-center justify-center backdrop-blur transition
+    bg-white dark:bg-neutral-600 hover:bg-blue-600 
+    border border-neutral-300/10 dark:border-neutral-400/40
+    text-black hover:text-white dark:text-white shadow-lg;
 }
 
-@utility segmented-control {
-  @apply flex w-full text-sm rounded-lg p-0.5
-    bg-neutral-300 dark:bg-neutral-800
-    border border-neutral-400/40 dark:border-neutral-700/40;
-}
-
-@utility segmented-control__option {
-  @apply flex-1 px-3 py-1 rounded-md transition-all
-  hover:bg-neutral-200/30 dark:hover:bg-neutral-700/30
-  text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white;
-}
-
-@utility segmented-control__option--selected {
-  @apply shadow-sm
-  bg-white dark:bg-neutral-700 hover:bg-white/80 dark:hover:bg-neutral-600/80
-  text-black dark:text-white;
-}
-
-@utility modal__overlay {
-  @apply fixed inset-0 min-h-screen min-w-screen bg-black/60 flex items-center justify-center z-50;
-}
-
-@utility modal__container {
-  @apply animate-pop rounded-2xl p-6 backdrop-blur
-    bg-white/70 dark:bg-neutral-900/70
-    text-left text-black dark:text-white
-    border border-neutral-500 dark:border-white/10;
-}
+/* ========================================
+   Widget Utilities
+   ======================================== */
 
 @utility widget-edit-border {
   @apply border-4 border-neutral-300/60 dark:border-neutral-400/30;
@@ -101,190 +101,25 @@
   touch-action: none;
 }
 
-@utility popover__container {
-  @apply rounded-2xl backdrop-blur z-50
-    bg-white/90 dark:bg-neutral-900/90
-    text-left text-black dark:text-white
-    border border-neutral-500 dark:border-white/10
-    shadow-2xl
-    relative;
-  min-width: 320px;
-  width: 384px;
-  max-width: 500px;
-  min-height: 400px;
-  max-height: 90vh;
-  overflow: visible;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+@utility widget-edit-border {
+  @apply border-4 border-neutral-300/60 dark:border-neutral-400/30;
 }
 
-.popover__container__content {
-  @apply p-6 overflow-x-hidden;
-  width: 100%;
-  flex: 1;
-  min-height: 0;
-  box-sizing: border-box;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  overflow-y: auto;
+@utility widget-container {
+  @apply rounded-4xl p-6 relative h-full w-full flex overflow-hidden;
 }
 
-/* For left/right placements: allow auto-height, only scroll if content exceeds max-height */
-.popover__container--auto-height {
-  height: auto;
+@utility widget-container--with-background {
+  @apply bg-white/70 dark:bg-neutral-900/30 shadow-lg backdrop-blur-xl;
 }
 
-.popover__container--auto-height .popover__container__content {
-  flex: 0 1 auto;
-  overflow-y: auto; /* Auto: only show scrollbar when content exceeds max-height */
-  max-height: calc(90vh - 48px); /* 90vh minus padding, enable scroll if exceeded */
+@utility widget-container--with-background-default {
+  @apply border border-neutral-500 dark:border-white/10;
 }
 
-.popover__container__content * {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-.popover__container__content input,
-.popover__container__content textarea,
-.popover__container__content select,
-.popover__container__content button {
-  max-width: 100%;
-}
-
-.popover__container--bottom::before {
-  content: '';
-  position: absolute;
-  top: -9px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 9px solid transparent;
-  border-right: 9px solid transparent;
-  border-bottom: 9px solid rgb(115 115 115);
-  z-index: 1;
-}
-
-.popover__container--bottom::after {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 8px solid rgba(255, 255, 255, 0.9);
-  z-index: 2;
-}
-
-@media (prefers-color-scheme: dark) {
-  .popover__container--bottom::after {
-    border-bottom-color: rgb(23 23 23 / 0.9);
-  }
-}
-
-.popover__container--top::before {
-  content: '';
-  position: absolute;
-  bottom: -9px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 9px solid transparent;
-  border-right: 9px solid transparent;
-  border-top: 9px solid rgb(115 115 115);
-  z-index: 1;
-}
-
-.popover__container--top::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 8px solid rgba(255, 255, 255, 0.9);
-  z-index: 2;
-}
-
-@media (prefers-color-scheme: dark) {
-  .popover__container--top::after {
-    border-top-color: rgb(23 23 23 / 0.9);
-  }
-}
-
-.popover__container--right::before {
-  content: '';
-  position: absolute;
-  left: -9px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-top: 9px solid transparent;
-  border-bottom: 9px solid transparent;
-  border-right: 9px solid rgb(115 115 115);
-  z-index: 1;
-}
-
-.popover__container--right::after {
-  content: '';
-  position: absolute;
-  left: -8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-right: 8px solid rgba(255, 255, 255, 0.9);
-  z-index: 2;
-}
-
-@media (prefers-color-scheme: dark) {
-  .popover__container--right::after {
-    border-right-color: rgb(23 23 23 / 0.9);
-  }
-}
-
-.popover__container--left::before {
-  content: '';
-  position: absolute;
-  right: -9px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-top: 9px solid transparent;
-  border-bottom: 9px solid transparent;
-  border-left: 9px solid rgb(115 115 115);
-  z-index: 1;
-}
-
-.popover__container--left::after {
-  content: '';
-  position: absolute;
-  right: -8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-left: 8px solid rgba(255, 255, 255, 0.9);
-  z-index: 2;
-}
-
-@media (prefers-color-scheme: dark) {
-  .popover__container--left::after {
-    border-left-color: rgb(23 23 23 / 0.9);
-  }
+@utility widget-grabber {
+  @apply absolute z-10 pointer-events-auto dark:border-neutral-100
+  border-b-4 border-r-4 w-8 h-8 rounded-br-4xl bottom-0 right-0;
+  animation: borderPulse 2s ease-in-out infinite;
+  touch-action: none;
 }

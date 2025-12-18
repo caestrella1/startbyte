@@ -11,7 +11,7 @@ export default function TextWidget({ settings = {} }) {
   if (!text) {
     return (
       <div className={textAlignClass}>
-        <div className="text-sm text-neutral-400 dark:text-neutral-500 italic">
+        <div className="text-sm text-placeholder italic">
           Click to edit text
         </div>
       </div>
@@ -46,10 +46,7 @@ TextWidget.Settings = function TextSettings({ settings = {}, onSettingsChange, o
             }}
             placeholder="Enter your text here..."
             rows={6}
-            className="w-full px-3 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700
-              bg-white dark:bg-neutral-800
-              text-black dark:text-white
-              text-sm resize-y"
+            className="form-input--textarea"
           />
         </div>
         <div>

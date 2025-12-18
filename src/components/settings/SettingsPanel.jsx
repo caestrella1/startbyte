@@ -78,7 +78,7 @@ export default function SettingsPanel({
                   onClick={onBack}
                   className="w-8 h-8 flex items-center justify-center rounded-lg 
                     hover:bg-neutral-100 dark:hover:bg-neutral-800
-                    text-neutral-600 dark:text-neutral-400 transition-colors"
+                    text-secondary transition-colors"
                   aria-label="Back"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,7 +96,7 @@ export default function SettingsPanel({
               onClick={onClose}
               className="w-8 h-8 flex items-center justify-center rounded-lg 
                 hover:bg-neutral-100 dark:hover:bg-neutral-800
-                text-neutral-600 dark:text-neutral-400"
+                text-secondary"
               aria-label="Close settings"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,7 +128,7 @@ export default function SettingsPanel({
                         transition-colors flex items-center gap-3
                         text-left"
                     >
-                      <div className="text-neutral-600 dark:text-neutral-400">
+                      <div className="text-secondary">
                         {category.icon}
                       </div>
                       <span className="font-medium text-black dark:text-white">

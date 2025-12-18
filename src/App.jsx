@@ -438,7 +438,7 @@ export default function App() {
             aria-label="Add widget"
           >
             <svg 
-              className="w-6 h-6 text-neutral-700 dark:text-neutral-300" 
+              className="fab-icon" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
@@ -494,7 +494,7 @@ export default function App() {
               </svg>
             ) : (
               <svg 
-                className="w-6 h-6 text-neutral-700 dark:text-neutral-300" 
+                className="fab-icon" 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -534,7 +534,7 @@ export default function App() {
             aria-label="Open settings"
           >
             <svg 
-              className="w-6 h-6 text-neutral-700 dark:text-neutral-300" 
+              className="fab-icon" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
