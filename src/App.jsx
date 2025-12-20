@@ -7,13 +7,50 @@ import { getStoredImage, storeImage, removeStoredImage } from './utils/imageStor
 import defaultConfig from './config/defaults.json';
 
 export default function App() {
+  const migrateWidgets = (inputWidgets) => {
+    if (!Array.isArray(inputWidgets)) return inputWidgets;
+
+    return inputWidgets.map((w) => {
+      if (!w || typeof w !== 'object') return w;
+
+      // Unify weather widgets back to a single `weather` type
+      if (w.type === 'weather3day') {
+        return { ...w, type: 'weather', settings: { ...(w.settings || {}), forecastMode: '3day' } };
+      }
+      if (w.type === 'weather5day') {
+        return { ...w, type: 'weather', settings: { ...(w.settings || {}), forecastMode: '5day' } };
+      }
+
+      // Migrate legacy `weather` widgets that used `settings.forecastDays`
+      if (w.type === 'weather') {
+        const forecastDays = w.settings?.forecastDays;
+        const forecastMode = w.settings?.forecastMode;
+
+        if (forecastMode) {
+          // Strip legacy forecastDays if present
+          const { forecastDays: _omit, ...restSettings } = (w.settings || {});
+          return { ...w, settings: restSettings };
+        }
+
+        let nextMode = 'today';
+        if (forecastDays === 3) nextMode = '3day';
+        if (forecastDays === 5 || forecastDays === 10) nextMode = '5day';
+
+        const { forecastDays: _omit, ...restSettings } = (w.settings || {});
+        return { ...w, settings: { ...restSettings, forecastMode: nextMode } };
+      }
+
+      return w;
+    });
+  };
+
   const [widgets, setWidgets] = useState(() => {
     const saved = localStorage.getItem('widgets');
     if (saved) {
-      return JSON.parse(saved);
+      return migrateWidgets(JSON.parse(saved));
     }
     // Default widgets from config
-    return defaultConfig.widgets;
+    return migrateWidgets(defaultConfig.widgets);
   });
   const [isWidgetPickerOpen, setIsWidgetPickerOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -321,7 +358,7 @@ export default function App() {
 
           // Import widgets
           if (importData.widgets) {
-            setWidgets(importData.widgets);
+            setWidgets(migrateWidgets(importData.widgets));
           }
 
           // Import background settings

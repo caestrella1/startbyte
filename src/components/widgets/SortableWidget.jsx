@@ -112,7 +112,7 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
         style={{ ...style, direction: 'ltr', touchAction: isEditing ? 'none' : 'auto' }}
         onClick={handleContainerClick}
         {...(isEditing && !isDragOverlay ? { ...attributes, ...listeners } : {})}
-        className={`widget-container group ${isDragOverlay ? '' : 'transition-opacity duration-200'} ${horizontalClasses[horizontalAlign]} ${verticalClasses[verticalAlign]} ${
+        className={`@container/${widget.type} widget-container group ${isDragOverlay ? '' : 'transition-opacity duration-200'} ${horizontalClasses[horizontalAlign]} ${verticalClasses[verticalAlign]} ${
           isEditing && hasSettings && !isDragging ? 'cursor-pointer' : ''
         } ${
           isEditing ? 'cursor-grab active:cursor-grabbing' : ''

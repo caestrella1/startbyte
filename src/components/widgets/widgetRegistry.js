@@ -1,5 +1,5 @@
-import DateTimeWidget from './DateTimeWidget';
-import WeatherWidget from './WeatherWidget';
+import DateTimeWidget from './datetime/DateTimeWidget';
+import WeatherWidget from './weather/WeatherWidget';
 import LinksWidget from './LinksWidget';
 import SearchBarWidget from './SearchBarWidget';
 import TextWidget from './TextWidget';
@@ -17,7 +17,7 @@ export const widgetRegistry = {
   },
   weather: {
     name: 'Weather',
-    description: 'Show current weather conditions',
+    description: 'Show weather (today, 3-day, or 5-day forecast)',
     component: WeatherWidget,
     minWidth: 1,
     minHeight: 1,
@@ -28,7 +28,7 @@ export const widgetRegistry = {
     name: 'Links',
     description: 'Quick access links',
     component: LinksWidget,
-    minWidth: 1,
+    minWidth: 3,
     minHeight: 1,
     maxWidth: null,
     maxHeight: null,
@@ -37,7 +37,7 @@ export const widgetRegistry = {
     name: 'Search Bar',
     description: 'Web search with autocomplete',
     component: SearchBarWidget,
-    minWidth: 2,
+    minWidth: 3,
     minHeight: 1,
     maxWidth: null,
     maxHeight: null,

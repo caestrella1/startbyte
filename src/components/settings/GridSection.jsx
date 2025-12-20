@@ -43,7 +43,7 @@ export default function GridSection({
             [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500
             [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
         />
-        <div className="flex justify-between text-xs text-muted mt-1">
+        <div className="flex justify-between text-xs text-secondary mt-1">
           <span>1</span>
           <span>4</span>
         </div>
@@ -71,7 +71,7 @@ export default function GridSection({
             [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500
             [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
         />
-        <div className="flex justify-between text-xs text-muted mt-1">
+        <div className="flex justify-between text-xs text-secondary mt-1">
           <span>2</span>
           <span>6</span>
         </div>
@@ -87,7 +87,7 @@ export default function GridSection({
         <input
           type="range"
           min="3"
-          max="10"
+          max="8"
           step="1"
           value={largeCols}
           onChange={(e) => onGridColumnsLargeChange(parseInt(e.target.value))}
@@ -99,9 +99,9 @@ export default function GridSection({
             [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500
             [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
         />
-        <div className="flex justify-between text-xs text-muted mt-1">
+        <div className="flex justify-between text-xs text-secondary mt-1">
           <span>3</span>
-          <span>10</span>
+          <span>8</span>
         </div>
       </div>
 

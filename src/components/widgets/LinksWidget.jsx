@@ -304,7 +304,7 @@ LinksWidget.Settings = function LinksSettings({ settings = {}, onSettingsChange,
               [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500
               [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
           />
-          <div className="flex justify-between text-xs text-muted mt-1">
+          <div className="flex justify-between text-xs text-secondary mt-1">
             <span>1</span>
             <span>{widgetHeight}</span>
           </div>
