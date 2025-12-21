@@ -19,7 +19,7 @@ export default function RenderedIcon({
     case 'favicon':
       if (!href) {
         return (
-        <span className="text-sm text-neutral-500">
+        <span className="text-sm text-secondary">
           Enter URL first
         </span>
       );
@@ -40,7 +40,7 @@ export default function RenderedIcon({
         );
       } catch (err) {
         return (
-          <span className="text-sm text-neutral-500">
+          <span className="text-sm text-secondary">
             Invalid URL
           </span>
         );
@@ -70,7 +70,7 @@ export default function RenderedIcon({
           {icon ? (
             <img src={icon} alt={label || 'Icon preview'} className="w-12 h-12 object-contain" />
           ) : (
-            <label htmlFor="icon-upload" className="cursor-pointer text-center text-sm text-neutral-500">
+            <label htmlFor="icon-upload" className="cursor-pointer text-center text-sm text-secondary">
               Drop image here
             </label>
           )}

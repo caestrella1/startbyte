@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DndContext, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
-import { SortableContext, arrayMove, horizontalListSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import EditLinkModal from '../EditLinkModal';
 import SortableLink from '../SortableLink';
 import SegmentedControl from '../ui/SegmentedControl';
 import AlignmentPicker from '../ui/AlignmentPicker';
 import Switch from '../ui/Switch';
 import defaultConfig from '../../config/defaults.json';
+import { PlusIcon } from '../../assets/icons';
 
 const linkStyles = [
   { id: 'pill', label: 'Pill' },
@@ -201,9 +202,7 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
                 >
                   <div className="flex flex-col items-center justify-start gap-2 px-4 py-3 rounded-xl hover:bg-black/30 hover:dark:bg-white/40 w-full h-full cursor-pointer">
                     <div className="w-[50%] h-[50%] max-w-14 max-h-14 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-full h-full text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
+                      <PlusIcon className="w-full h-full text-secondary" />
                     </div>
                     <span className="text-xs text-center font-medium line-clamp-2 w-full leading-tight text-secondary">
                       Add Link
@@ -219,9 +218,7 @@ export default function LinksWidget({ settings = {}, onSettingsChange, isEditing
                   }}
                   className="sortable-link"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
+                  <PlusIcon className="w-5 h-5" />
                   Add Link
                 </button>
               )
@@ -271,7 +268,7 @@ LinksWidget.Settings = function LinksSettings({ settings = {}, onSettingsChange,
               showTitle ? 'max-h-20 opacity-100 mt-3' : 'max-h-0 opacity-0 mt-0'
             }`}
           >
-            <label className="block text-sm font-medium mb-1 text-black dark:text-white">
+            <label className="block text-sm font-medium mb-1 text-primary">
               Widget Title
             </label>
             <input
@@ -284,7 +281,7 @@ LinksWidget.Settings = function LinksSettings({ settings = {}, onSettingsChange,
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+          <label className="block text-sm font-medium mb-3 text-primary">
             Link Rows: {linkRows}
           </label>
           <input
@@ -310,7 +307,7 @@ LinksWidget.Settings = function LinksSettings({ settings = {}, onSettingsChange,
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+          <label className="block text-sm font-medium mb-3 text-primary">
             Alignment
           </label>
           <AlignmentPicker
@@ -322,7 +319,7 @@ LinksWidget.Settings = function LinksSettings({ settings = {}, onSettingsChange,
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+          <label className="block text-sm font-medium mb-3 text-primary">
             Link Style
           </label>
           <SegmentedControl

@@ -1,6 +1,7 @@
 import React from 'react';
 import { WeatherSettingsBase, useWeatherData } from './WeatherBase';
 import { getDayName, getWeatherIcon } from './weatherUtils';
+import { SpinnerIcon } from '../../../assets/icons';
 
 export default function WeatherWidget({ settings = {} }) {
   const mode = settings.forecastMode || 'today';
@@ -15,10 +16,7 @@ export default function WeatherWidget({ settings = {} }) {
   if (loading) {
     return (
       <div className={`flex items-center ${justifyClass} gap-3`}>
-        <svg className="animate-spin h-6 w-6" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-        </svg>
+        <SpinnerIcon className="animate-spin h-6 w-6" />
         <span className="text-secondary">Loading weather...</span>
       </div>
     );
@@ -55,28 +53,28 @@ export default function WeatherWidget({ settings = {} }) {
           </a>
         </div>
 
-        <div className="text-md text-primary text-2xl @sm/weather:text-3xl leading-tight">
+        <div className="text-primary text-2xl @sm/weather:text-4xl @md/weather:text-5xl leading-tight">
           {Math.round(weather.main.temp)}°F
         </div>
 
         {(weather.weather?.[0]?.icon || currentCondition) && (
-          <div className={`flex items-center gap-2 min-w-0 w-full ${justifyClass}`}>
+          <div className={`flex items-center gap-1 min-w-0 w-full ${justifyClass}`}>
             {weather.weather?.[0]?.icon && (
               <img
                 src={getWeatherIcon(weather.weather[0].icon)}
                 alt={currentCondition}
-                className="w-6 h-6 @sm/weather:w-8 @sm/weather:h-8"
+                className="w-6 h-6 @md/weather:w-10 @md/weather:h-10"
               />
             )}
             {currentCondition && (
-              <div className="text-xs @sm/weather:text-sm text-secondary truncate capitalize">
+              <div className="text-xs @sm/weather:text-md @lg/weather:text-lg text-secondary truncate capitalize">
                 {currentCondition}
               </div>
             )}
           </div>
         )}
 
-        <div className={`flex items-center gap-2 text-xs @sm/weather:text-sm text-nowrap w-full ${justifyClass}`}>
+        <div className={`hidden @sm/weather:flex items-center gap-2 text-xs @sm/weather:text-md @lg/weather:text-lg text-nowrap w-full ${justifyClass}`}>
           <span className="text-primary font-semibold">
             H {highTemp}°
           </span>

@@ -88,7 +88,7 @@ export default function SearchProviderPicker({ provider, showProviders, onToggle
           className="w-5 h-5"
         />
         <svg 
-          className={`w-3 h-3 text-neutral-400 transition-transform ${showProviders ? 'rotate-180' : ''}`} 
+          className={`w-3 h-3 text-primary transition-transform ${showProviders ? 'rotate-180' : ''}`} 
           fill="none" 
           stroke="currentColor" 
           viewBox="0 0 24 24"
@@ -98,7 +98,12 @@ export default function SearchProviderPicker({ provider, showProviders, onToggle
       </button>
 
       {showProviders && (
-        <Dropdown className="left-0 right-auto w-48" role="listbox">
+        <Dropdown 
+          className="left-0 right-auto w-48" 
+          role="listbox" 
+          anchorElement={buttonRef.current}
+          useAnchorWidth={false}
+        >
           {Object.entries(searchProviders).map(([key, info], index) => (
             <DropdownItem
               key={key}

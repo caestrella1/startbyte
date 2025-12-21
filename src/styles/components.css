@@ -29,7 +29,7 @@
 }
 
 @utility fab-icon {
-  @apply w-6 h-6 text-icon;
+  @apply w-6 h-6 text-neutral-700 dark:text-neutral-300;
 }
 
 /* ========================================
@@ -61,7 +61,7 @@
 
 @utility sortable-link {
   @apply no-underline px-4 py-1.5 rounded-xl shadow transition flex items-center gap-2 relative
-    text-sm text-black dark:text-white font-semibold dark:hover:text-black
+    text-sm text-primary font-semibold dark:hover:text-black
     bg-white/70 dark:bg-neutral-700/60 hover:bg-white hover:dark:bg-white 
     border border-neutral-700/10 dark:border-neutral-300/10 
     focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-neutral-800;
@@ -83,38 +83,15 @@
 }
 
 @utility widget-container {
-  @apply rounded-4xl p-6 relative h-full w-full flex overflow-hidden;
+  @apply rounded-4xl p-6 relative h-full w-full flex overflow-visible;
 }
 
 @utility widget-container--with-background {
-  @apply bg-white/70 dark:bg-neutral-900/30 shadow-lg backdrop-blur-xl;
+  @apply bg-white/70 dark:bg-neutral-900/30 shadow-lg backdrop-blur-md;
 }
 
 @utility widget-container--with-background-default {
-  @apply border border-neutral-500 dark:border-white/10;
-}
-
-@utility widget-grabber {
-  @apply absolute z-10 pointer-events-auto dark:border-neutral-100
-  border-b-4 border-r-4 w-8 h-8 rounded-br-4xl bottom-0 right-0;
-  animation: borderPulse 2s ease-in-out infinite;
-  touch-action: none;
-}
-
-@utility widget-edit-border {
-  @apply border-4 border-neutral-300/60 dark:border-neutral-400/30;
-}
-
-@utility widget-container {
-  @apply rounded-4xl p-6 relative h-full w-full flex overflow-hidden;
-}
-
-@utility widget-container--with-background {
-  @apply bg-white/70 dark:bg-neutral-900/30 shadow-lg backdrop-blur-xl;
-}
-
-@utility widget-container--with-background-default {
-  @apply border border-neutral-500 dark:border-white/10;
+  @apply border border-neutral-600/20 dark:border-white/10;
 }
 
 @utility widget-grabber {

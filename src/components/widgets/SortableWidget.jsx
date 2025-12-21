@@ -5,6 +5,7 @@ import Widget from './Widget';
 import ResizableWidget from './ResizableWidget';
 import { widgetRegistry } from './widgetRegistry';
 import Popover from '../ui/Popover';
+import { DragHandleIcon } from '../../assets/icons';
 
 export default function SortableWidget({ widget, onWidgetSettingsChange, onWidgetRemove, isEditing = false, gridColumns = 3, currentlyEditedWidgetId = null, onWidgetSettingsOpen = null, onWidgetSettingsClose = null, isDragOverlay = false }) {
   const widgetDef = widgetRegistry[widget.type];
@@ -140,9 +141,7 @@ export default function SortableWidget({ widget, onWidgetSettingsChange, onWidge
             aria-label="Drag widget"
             tabIndex={-1}
           >
-            <svg className="w-5 h-5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
-            </svg>
+            <DragHandleIcon className="w-5 h-5 md:w-4 md:h-4" />
           </button>
         )}
         <Widget

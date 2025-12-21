@@ -35,7 +35,7 @@ TextWidget.Settings = function TextSettings({ settings = {}, onSettingsChange, o
       <h2 className="text-lg font-bold mb-4">Text Settings</h2>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+          <label className="block text-sm font-medium mb-3 text-primary">
             Text Content
           </label>
           <textarea
@@ -50,7 +50,7 @@ TextWidget.Settings = function TextSettings({ settings = {}, onSettingsChange, o
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+          <label className="block text-sm font-medium mb-3 text-primary">
             Alignment
           </label>
           <AlignmentPicker

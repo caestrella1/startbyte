@@ -20,7 +20,7 @@ export default function WidgetPicker({ isOpen, onClose, onAddWidget }) {
                 border border-neutral-200 dark:border-neutral-700
                 transition-colors"
             >
-              <div className="font-semibold text-black dark:text-white">{widget.name}</div>
+              <div className="font-semibold text-primary">{widget.name}</div>
               {widget.description && (
                 <div className="text-sm text-secondary mt-1">
                   {widget.description}

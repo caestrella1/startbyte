@@ -1,22 +1,11 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import { ImageIcon, GridIcon, RefreshIcon, ChevronLeftIcon, CloseIcon, ChevronRightIcon } from '../../assets/icons';
 
 const categories = [
-  { id: 'background', label: 'Wallpaper', icon: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-    </svg>
-  ) },
-  { id: 'grid', label: 'Grid', icon: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-    </svg>
-  ) },
-  { id: 'reset', label: 'Transfer & Reset', icon: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-    </svg>
-  ) },
+  { id: 'background', label: 'Wallpaper', icon: <ImageIcon className="w-5 h-5" /> },
+  { id: 'grid', label: 'Grid', icon: <GridIcon className="w-5 h-5" /> },
+  { id: 'reset', label: 'Transfer & Reset', icon: <RefreshIcon className="w-5 h-5" /> },
 ];
 
 export default function SettingsPanel({ 
@@ -58,8 +47,8 @@ export default function SettingsPanel({
       
       {/* Side Panel */}
       <div 
-        className={`fixed right-4 top-4 bottom-4 w-80 max-w-[calc(100vw-2rem)] bg-white/90 dark:bg-neutral-900/90 backdrop-blur-xl 
-          rounded-2xl border border-neutral-500 dark:border-white/10
+        className={`fixed right-4 top-4 bottom-4 w-80 max-w-[calc(100vw-2rem)] bg-white/60 dark:bg-neutral-900/60 backdrop-blur-xl 
+          rounded-2xl border border-neutral-600/20 dark:border-white/10
           shadow-2xl z-50
           ${isClosing ? 'animate-spring-slide-out' : 'animate-spring-slide-in'}`}
         onClick={e => e.stopPropagation()}
@@ -81,16 +70,14 @@ export default function SettingsPanel({
                     text-secondary transition-colors"
                   aria-label="Back"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
+                  <ChevronLeftIcon className="w-5 h-5" />
                 </button>
-                <h2 className="text-2xl font-bold text-black dark:text-white">
+                <h2 className="text-2xl font-bold text-primary">
                   {currentCategoryLabel}
                 </h2>
               </div>
             ) : (
-              <h2 className="text-2xl font-bold text-black dark:text-white">Settings</h2>
+              <h2 className="text-2xl font-bold text-primary">Settings</h2>
             )}
             <button
               onClick={onClose}
@@ -99,9 +86,7 @@ export default function SettingsPanel({
                 text-secondary"
               aria-label="Close settings"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <CloseIcon className="w-5 h-5" />
             </button>
           </div>
           
@@ -123,20 +108,16 @@ export default function SettingsPanel({
                     <button
                       key={category.id}
                       onClick={() => onCategorySelect(category.id)}
-                      className="w-full p-4 rounded-lg border border-neutral-300 dark:border-neutral-700
-                        hover:bg-neutral-100 dark:hover:bg-neutral-800
-                        transition-colors flex items-center gap-3
-                        text-left"
+                      className="w-full p-4 rounded-2xl transition-colors text-left flex items-center gap-3
+                        bg-white/60 dark:bg-neutral-900/60 hover:bg-white dark:hover:bg-neutral-800"
                     >
                       <div className="text-secondary">
                         {category.icon}
                       </div>
-                      <span className="font-medium text-black dark:text-white">
+                      <span className="font-medium text-primary">
                         {category.label}
                       </span>
-                      <svg className="w-5 h-5 text-neutral-400 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                      <ChevronRightIcon className="w-5 h-5 text-icon ml-auto" />
                     </button>
                   ))}
                 </div>

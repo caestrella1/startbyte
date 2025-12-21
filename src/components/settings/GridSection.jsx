@@ -22,7 +22,7 @@ export default function GridSection({
   return (
     <div className="space-y-6">
       <div>
-        <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+        <label className="block text-sm font-medium mb-3 text-primary">
           Grid Columns (Small: &lt;640px): {smallCols}
         </label>
         <p className="text-xs text-secondary mb-4">
@@ -50,7 +50,7 @@ export default function GridSection({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+        <label className="block text-sm font-medium mb-3 text-primary">
           Grid Columns (Medium: 640px-1023px): {mediumCols}
         </label>
         <p className="text-xs text-secondary mb-4">
@@ -78,7 +78,7 @@ export default function GridSection({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+        <label className="block text-sm font-medium mb-3 text-primary">
           Grid Columns (Large: ≥1024px): {largeCols}
         </label>
         <p className="text-xs text-secondary mb-4">
@@ -106,7 +106,7 @@ export default function GridSection({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+        <label className="block text-sm font-medium mb-3 text-primary">
           Horizontal Alignment
         </label>
         <p className="text-xs text-secondary mb-4">
@@ -123,7 +123,7 @@ export default function GridSection({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+        <label className="block text-sm font-medium mb-3 text-primary">
           Vertical Alignment
         </label>
         <p className="text-xs text-secondary mb-4">

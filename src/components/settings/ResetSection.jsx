@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { DownloadIcon, UploadIcon } from '../../assets/icons';
 
 export default function ResetSection({
   onExportSettings,
@@ -12,7 +13,7 @@ export default function ResetSection({
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-sm font-medium text-black dark:text-white mb-2">Export Settings</h3>
+        <h3 className="text-sm font-medium text-primary mb-2">Export Settings</h3>
         <p className="text-xs text-secondary mb-3">
           Download all your settings, widgets, and wallpaper configuration as a JSON file.
         </p>
@@ -26,15 +27,13 @@ export default function ResetSection({
             hover:bg-blue-100 dark:hover:bg-blue-900/30
             transition-colors font-medium flex items-center justify-center gap-2"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
+          <DownloadIcon className="w-4 h-4" />
           Export Settings
         </button>
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-black dark:text-white mb-2">Import Settings</h3>
+        <h3 className="text-sm font-medium text-primary mb-2">Import Settings</h3>
         <p className="text-xs text-secondary mb-3">
           Import settings from a previously exported JSON file. This will replace your current settings.
         </p>
@@ -48,9 +47,7 @@ export default function ResetSection({
             hover:bg-blue-100 dark:hover:bg-blue-900/30
             transition-colors font-medium flex items-center justify-center gap-2"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-          </svg>
+          <UploadIcon className="w-4 h-4" />
           Import Settings
         </button>
         <input
@@ -78,7 +75,7 @@ export default function ResetSection({
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-black dark:text-white mb-2">Reset Wallpaper</h3>
+        <h3 className="text-sm font-medium text-primary mb-2">Reset Wallpaper</h3>
         <p className="text-xs text-secondary mb-3">
           Reset the wallpaper to the default solid black color.
         </p>
@@ -98,7 +95,7 @@ export default function ResetSection({
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-black dark:text-white mb-2">Reset All Settings</h3>
+        <h3 className="text-sm font-medium text-primary mb-2">Reset All Settings</h3>
         <p className="text-xs text-secondary mb-3">
           Reset all settings including wallpaper and widgets to their default values. This action cannot be undone.
         </p>

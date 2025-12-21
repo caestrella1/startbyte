@@ -18,7 +18,7 @@ export default function GreetingWidget({ settings = {} }) {
 
   return (
     <div className={textAlignClass}>
-      <div className="text-xl font-normal tracking-wide text-neutral-600 dark:text-white">
+      <div className="text-xl font-normal tracking-wide text-primary">
         {getGreeting()}, {name}
       </div>
     </div>
@@ -31,7 +31,7 @@ GreetingWidget.Settings = function GreetingSettings({ settings = {}, onSettingsC
       <h2 className="text-lg font-bold mb-4">Greeting Settings</h2>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+          <label className="block text-sm font-medium mb-3 text-primary">
             Name
           </label>
           <input
@@ -43,7 +43,7 @@ GreetingWidget.Settings = function GreetingSettings({ settings = {}, onSettingsC
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-3 text-black dark:text-white">
+          <label className="block text-sm font-medium mb-3 text-primary">
             Alignment
           </label>
           <AlignmentPicker

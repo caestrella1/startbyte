@@ -1,11 +1,12 @@
 @reference "tailwindcss";
 
-/* ========================================
-   Text Color Utilities
-   ======================================== */
 
 @utility text-primary {
   @apply text-black dark:text-white;
+}
+
+@utility text-primary--inverse {
+  @apply text-white dark:text-black;
 }
 
 @utility text-secondary {
@@ -13,10 +14,9 @@
 }
 
 @utility text-placeholder {
-  @apply text-neutral-400 dark:text-neutral-500;
+  @apply text-black/40 dark:text-white/40;
 }
 
 @utility text-icon {
   @apply text-neutral-700 dark:text-neutral-300;
 }
-

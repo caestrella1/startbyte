@@ -426,7 +426,7 @@ export default function App() {
   };
 
   return (
-    <div className="font-sans text-neutral-900 dark:text-neutral-100 min-h-screen flex flex-col relative overflow-hidden"
+    <div className="font-sans text-primary min-h-screen flex flex-col relative overflow-hidden"
       style={{
         justifyContent: widgetAlignmentVertical === 'top' ? 'flex-start' : 
                       widgetAlignmentVertical === 'bottom' ? 'flex-end' : 
@@ -490,7 +490,7 @@ export default function App() {
           </button>
           <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2
             px-3 py-1.5 rounded-lg
-            bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900
+            bg-neutral-900 dark:bg-neutral-100 text-primary--inverse
             text-sm font-medium whitespace-nowrap
             opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none
             shadow-lg">
@@ -547,7 +547,7 @@ export default function App() {
           </button>
           <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2
             px-3 py-1.5 rounded-lg
-            bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900
+            bg-neutral-900 dark:bg-neutral-100 text-primary--inverse
             text-sm font-medium whitespace-nowrap
             opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none
             shadow-lg">
@@ -592,7 +592,7 @@ export default function App() {
         </button>
           <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2
             px-3 py-1.5 rounded-lg
-            bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900
+            bg-neutral-900 dark:bg-neutral-100 text-primary--inverse
             text-sm font-medium whitespace-nowrap
             opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none
             shadow-lg">
