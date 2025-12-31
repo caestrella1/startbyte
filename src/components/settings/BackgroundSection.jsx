@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
-import SegmentedControl from '../ui/SegmentedControl';
-import { ImageIcon } from '../../assets/icons';
-import { compressImage } from '../../utils/imageStorage';
+import SegmentedControl from 'ui/SegmentedControl';
+import { ImageIcon } from 'assets/icons';
+import { compressImage } from 'utils/imageStorage';
 
 const backgroundTypeOptions = [
   { id: 'solid', label: 'Solid' },

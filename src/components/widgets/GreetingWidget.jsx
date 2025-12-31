@@ -1,6 +1,6 @@
 import React from 'react';
-import AlignmentPicker from '../ui/AlignmentPicker';
-import Switch from '../ui/Switch';
+import AlignmentPicker from 'ui/AlignmentPicker';
+import Switch from 'ui/Switch';
 
 const getGreeting = () => {
   const hour = new Date().getHours();

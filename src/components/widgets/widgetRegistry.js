@@ -1,9 +1,9 @@
-import DateTimeWidget from './datetime/DateTimeWidget';
-import WeatherWidget from './weather/WeatherWidget';
-import LinksWidget from './LinksWidget';
-import SearchBarWidget from './SearchBarWidget';
-import TextWidget from './TextWidget';
-import GreetingWidget from './GreetingWidget';
+import DateTimeWidget from 'widgets/datetime/DateTimeWidget';
+import WeatherWidget from 'widgets/weather/WeatherWidget';
+import LinkWidget from 'widgets/LinkWidget';
+import SearchBarWidget from 'widgets/SearchBarWidget';
+import TextWidget from 'widgets/TextWidget';
+import GreetingWidget from 'widgets/GreetingWidget';
 
 export const widgetRegistry = {
   datetime: {
@@ -24,11 +24,11 @@ export const widgetRegistry = {
     maxWidth: null,
     maxHeight: null,
   },
-  links: {
-    name: 'Links',
-    description: 'Quick access links',
-    component: LinksWidget,
-    minWidth: 3,
+  link: {
+    name: 'Link',
+    description: 'Single quick access link',
+    component: LinkWidget,
+    minWidth: 1,
     minHeight: 1,
     maxWidth: null,
     maxHeight: null,

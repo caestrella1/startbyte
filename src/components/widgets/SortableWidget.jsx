@@ -1,11 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import Widget from './Widget';
-import ResizableWidget from './ResizableWidget';
-import { widgetRegistry } from './widgetRegistry';
-import Popover from '../ui/Popover';
-import { DragHandleIcon } from '../../assets/icons';
+import Widget from 'widgets/Widget';
+import ResizableWidget from 'widgets/ResizableWidget';
+import { widgetRegistry } from 'widgets/widgetRegistry';
+import Popover from 'ui/Popover';
+import { DragHandleIcon } from 'assets/icons';
 
 export default function SortableWidget({ widget, onWidgetSettingsChange, onWidgetRemove, isEditing = false, gridColumns = 3, currentlyEditedWidgetId = null, onWidgetSettingsOpen = null, onWidgetSettingsClose = null, isDragOverlay = false }) {
   const widgetDef = widgetRegistry[widget.type];

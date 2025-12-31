@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DndContext, useSensor, useSensors, PointerSensor, DragOverlay } from '@dnd-kit/core';
 import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers';
 import { SortableContext, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable';
-import SortableWidget from './widgets/SortableWidget';
+import SortableWidget from 'widgets/SortableWidget';
 
 export default function WidgetGrid({ widgets, onWidgetSettingsChange, onWidgetRemove, onWidgetReorder, isEditing = false, gridColumnsSmall = 1, gridColumnsMedium = 2, gridColumnsLarge = 6, widgetAlignmentHorizontal = 'left', widgetAlignmentVertical = 'center', currentlyEditedWidgetId = null, onWidgetSettingsOpen = null, onWidgetSettingsClose = null }) {
   const gridRef = useRef(null);

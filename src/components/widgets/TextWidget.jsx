@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import AlignmentPicker from '../ui/AlignmentPicker';
-import Switch from '../ui/Switch';
+import AlignmentPicker from 'ui/AlignmentPicker';
+import Switch from 'ui/Switch';
 
 export default function TextWidget({ settings = {} }) {
   const text = settings.text || '';

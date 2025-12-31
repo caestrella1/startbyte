@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import AlignmentPicker from '../../ui/AlignmentPicker';
-import Switch from '../../ui/Switch';
-import SegmentedControl from '../../ui/SegmentedControl';
+import AlignmentPicker from 'ui/AlignmentPicker';
+import Switch from 'ui/Switch';
+import SegmentedControl from 'ui/SegmentedControl';
 import {
   COMMON_TIME_ZONES,
   resolveTimeZone,
   getTimeFormatter,
   getDateFormatter,
   formatCustomDate,
-} from './dateTimeUtils';
+} from 'widgets/datetime/dateTimeUtils';
 
 export default function DateTimeWidget({ settings = {} }) {
   const [time, setTime] = useState(new Date());

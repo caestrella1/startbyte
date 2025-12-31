@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Dropdown, { DropdownItem } from './ui/Dropdown';
-import { searchProviders, getProviderInfo } from '../utils/searchProviders';
+import Dropdown, { DropdownItem } from 'ui/Dropdown';
+import { searchProviders, getProviderInfo } from 'utils/searchProviders';
 
 export default function SearchProviderPicker({ provider, showProviders, onToggle, onChange }) {
   const [selectedIndex, setSelectedIndex] = useState(-1);

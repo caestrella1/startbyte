@@ -1,185 +1,82 @@
 import React, { useState, useEffect } from 'react';
-import Background from './components/Background';
-import WidgetGrid from './components/WidgetGrid';
-import WidgetPicker from './components/widgets/WidgetPicker';
-import Settings from './components/Settings';
-import { getStoredImage, storeImage, removeStoredImage } from './utils/imageStorage';
+import Background from 'components/Background';
+import WidgetGrid from 'components/WidgetGrid';
+import WidgetPicker from 'widgets/WidgetPicker';
+import Settings from 'components/Settings';
+import SettingsManager from 'utils/SettingsManager';
 import defaultConfig from './config/defaults.json';
 
 export default function App() {
-  const migrateWidgets = (inputWidgets) => {
-    if (!Array.isArray(inputWidgets)) return inputWidgets;
-
-    return inputWidgets.map((w) => {
-      if (!w || typeof w !== 'object') return w;
-
-      // Unify weather widgets back to a single `weather` type
-      if (w.type === 'weather3day') {
-        return { ...w, type: 'weather', settings: { ...(w.settings || {}), forecastMode: '3day' } };
-      }
-      if (w.type === 'weather5day') {
-        return { ...w, type: 'weather', settings: { ...(w.settings || {}), forecastMode: '5day' } };
-      }
-
-      // Migrate legacy `weather` widgets that used `settings.forecastDays`
-      if (w.type === 'weather') {
-        const forecastDays = w.settings?.forecastDays;
-        const forecastMode = w.settings?.forecastMode;
-
-        if (forecastMode) {
-          // Strip legacy forecastDays if present
-          const { forecastDays: _omit, ...restSettings } = (w.settings || {});
-          return { ...w, settings: restSettings };
-        }
-
-        let nextMode = 'today';
-        if (forecastDays === 3) nextMode = '3day';
-        if (forecastDays === 5 || forecastDays === 10) nextMode = '5day';
-
-        const { forecastDays: _omit, ...restSettings } = (w.settings || {});
-        return { ...w, settings: { ...restSettings, forecastMode: nextMode } };
-      }
-
-      return w;
-    });
-  };
-
-  const [widgets, setWidgets] = useState(() => {
-    const saved = localStorage.getItem('widgets');
-    if (saved) {
-      return migrateWidgets(JSON.parse(saved));
-    }
-    // Default widgets from config
-    return migrateWidgets(defaultConfig.widgets);
-  });
+  const [widgets, setWidgets] = useState(SettingsManager.getWidgets);
   const [isWidgetPickerOpen, setIsWidgetPickerOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [background, setBackground] = useState(() => {
-    const saved = localStorage.getItem('background');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        // Legacy format - convert to new format
-        if (saved.startsWith('solid-') || saved.startsWith('gradient-')) {
-          return saved;
-        }
-        return defaultConfig.background;
-      }
-    }
-    return defaultConfig.background;
-  });
-  const [backgroundType, setBackgroundType] = useState(() => {
-    return localStorage.getItem('backgroundType') || defaultConfig.backgroundType;
-  });
-  const [customSolidColor, setCustomSolidColor] = useState(() => {
-    return localStorage.getItem('customSolidColor') || defaultConfig.customSolidColor;
-  });
-  const [customGradientColors, setCustomGradientColors] = useState(() => {
-    const saved = localStorage.getItem('customGradientColors');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return defaultConfig.customGradientColors;
-      }
-    }
-    return defaultConfig.customGradientColors;
-  });
-  const [customBackgroundImage, setCustomBackgroundImage] = useState(() => {
-    return getStoredImage('customBackgroundImage');
-  });
-  const [backgroundBlur, setBackgroundBlur] = useState(() => {
-    const saved = localStorage.getItem('backgroundBlur');
-    return saved ? parseFloat(saved) : defaultConfig.backgroundBlur;
-  });
-  const [backgroundOverlay, setBackgroundOverlay] = useState(() => {
-    const saved = localStorage.getItem('backgroundOverlay');
-    return saved ? parseFloat(saved) : defaultConfig.backgroundOverlay;
-  });
-  const [gridColumnsSmall, setGridColumnsSmall] = useState(() => {
-    const saved = localStorage.getItem('gridColumnsSmall');
-    return saved ? parseInt(saved) : (defaultConfig.gridColumnsSmall ?? 1);
-  });
-  const [gridColumnsMedium, setGridColumnsMedium] = useState(() => {
-    const saved = localStorage.getItem('gridColumnsMedium');
-    return saved ? parseInt(saved) : (defaultConfig.gridColumnsMedium ?? 2);
-  });
-  const [gridColumnsLarge, setGridColumnsLarge] = useState(() => {
-    const saved = localStorage.getItem('gridColumnsLarge');
-    return saved ? parseInt(saved) : (defaultConfig.gridColumnsLarge ?? defaultConfig.gridColumns ?? 6);
-  });
-  const [widgetAlignmentHorizontal, setWidgetAlignmentHorizontal] = useState(() => {
-    const saved = localStorage.getItem('widgetAlignmentHorizontal');
-    return saved || defaultConfig.widgetAlignmentHorizontal || 'left';
-  });
-  const [widgetAlignmentVertical, setWidgetAlignmentVertical] = useState(() => {
-    const saved = localStorage.getItem('widgetAlignmentVertical');
-    return saved || defaultConfig.widgetAlignmentVertical || 'center';
-  });
+  const [background, setBackground] = useState(SettingsManager.getBackground);
+  const [backgroundType, setBackgroundType] = useState(SettingsManager.getBackgroundType);
+  const [customSolidColor, setCustomSolidColor] = useState(SettingsManager.getCustomSolidColor);
+  const [customGradientColors, setCustomGradientColors] = useState(SettingsManager.getCustomGradientColors);
+  const [customBackgroundImage, setCustomBackgroundImage] = useState(SettingsManager.getCustomBackgroundImage);
+  const [backgroundBlur, setBackgroundBlur] = useState(SettingsManager.getBackgroundBlur);
+  const [backgroundOverlay, setBackgroundOverlay] = useState(SettingsManager.getBackgroundOverlay);
+  const [gridColumnsSmall, setGridColumnsSmall] = useState(SettingsManager.getGridColumnsSmall);
+  const [gridColumnsMedium, setGridColumnsMedium] = useState(SettingsManager.getGridColumnsMedium);
+  const [gridColumnsLarge, setGridColumnsLarge] = useState(SettingsManager.getGridColumnsLarge);
+  const [widgetAlignmentHorizontal, setWidgetAlignmentHorizontal] = useState(SettingsManager.getWidgetAlignmentHorizontal);
+  const [widgetAlignmentVertical, setWidgetAlignmentVertical] = useState(SettingsManager.getWidgetAlignmentVertical);
   const [currentlyEditedWidgetId, setCurrentlyEditedWidgetId] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem('widgets', JSON.stringify(widgets));
+    SettingsManager.saveWidgets(widgets);
   }, [widgets]);
 
   useEffect(() => {
-    if (typeof background === 'object' && background !== null) {
-      localStorage.setItem('background', JSON.stringify(background));
-    } else {
-      localStorage.setItem('background', background);
-    }
+    SettingsManager.saveBackground(background);
   }, [background]);
 
   useEffect(() => {
-    localStorage.setItem('backgroundType', backgroundType);
+    SettingsManager.saveBackgroundType(backgroundType);
   }, [backgroundType]);
 
   useEffect(() => {
-    localStorage.setItem('customSolidColor', customSolidColor);
+    SettingsManager.saveCustomSolidColor(customSolidColor);
   }, [customSolidColor]);
 
   useEffect(() => {
-    localStorage.setItem('customGradientColors', JSON.stringify(customGradientColors));
+    SettingsManager.saveCustomGradientColors(customGradientColors);
   }, [customGradientColors]);
 
   useEffect(() => {
-    if (customBackgroundImage) {
-      storeImage('customBackgroundImage', customBackgroundImage).catch(err => {
-        console.error('Failed to store background image:', err);
-      });
-    } else {
-      removeStoredImage('customBackgroundImage');
-    }
+    SettingsManager.saveCustomBackgroundImage(customBackgroundImage).catch(err => {
+      console.error('Failed to store background image:', err);
+    });
   }, [customBackgroundImage]);
 
   useEffect(() => {
-    localStorage.setItem('backgroundBlur', backgroundBlur.toString());
+    SettingsManager.saveBackgroundBlur(backgroundBlur);
   }, [backgroundBlur]);
 
   useEffect(() => {
-    localStorage.setItem('backgroundOverlay', backgroundOverlay.toString());
+    SettingsManager.saveBackgroundOverlay(backgroundOverlay);
   }, [backgroundOverlay]);
 
   useEffect(() => {
-    localStorage.setItem('gridColumnsSmall', gridColumnsSmall.toString());
+    SettingsManager.saveGridColumnsSmall(gridColumnsSmall);
   }, [gridColumnsSmall]);
 
   useEffect(() => {
-    localStorage.setItem('gridColumnsMedium', gridColumnsMedium.toString());
+    SettingsManager.saveGridColumnsMedium(gridColumnsMedium);
   }, [gridColumnsMedium]);
 
   useEffect(() => {
-    localStorage.setItem('gridColumnsLarge', gridColumnsLarge.toString());
+    SettingsManager.saveGridColumnsLarge(gridColumnsLarge);
   }, [gridColumnsLarge]);
 
   useEffect(() => {
-    localStorage.setItem('widgetAlignmentHorizontal', widgetAlignmentHorizontal);
+    SettingsManager.saveWidgetAlignmentHorizontal(widgetAlignmentHorizontal);
   }, [widgetAlignmentHorizontal]);
 
   useEffect(() => {
-    localStorage.setItem('widgetAlignmentVertical', widgetAlignmentVertical);
+    SettingsManager.saveWidgetAlignmentVertical(widgetAlignmentVertical);
   }, [widgetAlignmentVertical]);
 
   // Clamp widget widths when grid size changes (use largest breakpoint)
@@ -249,19 +146,18 @@ export default function App() {
   };
 
   const handleResetAll = () => {
-    // Clear all links data for links widgets first
-    const linkKeys = Object.keys(localStorage).filter(key => key.startsWith('linkOrder-'));
-    linkKeys.forEach(key => localStorage.removeItem(key));
+    // Clear all localStorage
+    SettingsManager.clearAll();
     
     // Reset widgets to defaults with new IDs to force remounting
-    const timestamp = Date.now();
-    const defaultWidgets = defaultConfig.widgets.map(widget => ({
+    const baseTimestamp = Date.now();
+    const defaultWidgets = defaultConfig.widgets.map((widget, index) => ({
       ...widget,
-      id: `${widget.type}-${timestamp}`,
+      id: `${widget.type}-${baseTimestamp}-${index}`,
     }));
     setWidgets(defaultWidgets);
     
-    // Reset background
+    // Reset all settings to defaults
     setBackground(defaultConfig.background);
     setBackgroundType(defaultConfig.backgroundType);
     setCustomSolidColor(defaultConfig.customSolidColor);
@@ -269,67 +165,16 @@ export default function App() {
     setCustomBackgroundImage(defaultConfig.customBackgroundImage);
     setBackgroundBlur(defaultConfig.backgroundBlur);
     setBackgroundOverlay(defaultConfig.backgroundOverlay);
-    
-    // Reset grid settings
     setGridColumnsSmall(defaultConfig.gridColumnsSmall ?? 1);
     setGridColumnsMedium(defaultConfig.gridColumnsMedium ?? 2);
     setGridColumnsLarge(defaultConfig.gridColumnsLarge ?? defaultConfig.gridColumns ?? 6);
     setWidgetAlignmentHorizontal(defaultConfig.widgetAlignmentHorizontal || 'left');
     setWidgetAlignmentVertical(defaultConfig.widgetAlignmentVertical || 'center');
-    
-    // Clear localStorage
-    localStorage.removeItem('widgets');
-    localStorage.removeItem('background');
-    localStorage.removeItem('backgroundType');
-    localStorage.removeItem('customSolidColor');
-    localStorage.removeItem('gridColumns');
-    localStorage.removeItem('widgetAlignmentHorizontal');
-    localStorage.removeItem('widgetAlignmentVertical');
-    localStorage.removeItem('customGradientColors');
-    localStorage.removeItem('backgroundBlur');
-    localStorage.removeItem('backgroundOverlay');
-    removeStoredImage('customBackgroundImage');
   };
 
   const handleExportSettings = () => {
-    // Collect all settings
-    const exportData = {
-      version: '1.0',
-      widgets: widgets,
-      background: background,
-      backgroundType: backgroundType,
-      customSolidColor: customSolidColor,
-      customGradientColors: customGradientColors,
-      customBackgroundImage: customBackgroundImage,
-      backgroundBlur: backgroundBlur,
-      backgroundOverlay: backgroundOverlay,
-      gridColumnsSmall: gridColumnsSmall,
-      gridColumnsMedium: gridColumnsMedium,
-      gridColumnsLarge: gridColumnsLarge,
-      widgetAlignmentHorizontal: widgetAlignmentHorizontal,
-      widgetAlignmentVertical: widgetAlignmentVertical,
-      // Collect links data for all links widgets
-      linksData: {},
-      // Search provider (if stored globally)
-      searchProvider: localStorage.getItem('searchProvider') || null,
-    };
-
-    // Collect links data for each links widget
-    widgets.forEach(widget => {
-      if (widget.type === 'links') {
-        // Use widget.id as the key (this is what LinksWidget uses)
-        const widgetId = widget.id;
-        const linkKey = `linkOrder-${widgetId}`;
-        const linksData = localStorage.getItem(linkKey);
-        if (linksData) {
-          try {
-            exportData.linksData[widgetId] = JSON.parse(linksData);
-          } catch (e) {
-            console.warn(`Failed to parse links data for widget ${widgetId}:`, e);
-          }
-        }
-      }
-    });
+    // Get all settings
+    const exportData = SettingsManager.getAll();
 
     // Create and download JSON file
     const dataStr = JSON.stringify(exportData, null, 2);
@@ -351,69 +196,21 @@ export default function App() {
         try {
           const importData = JSON.parse(e.target.result);
           
-          // Validate version (for future compatibility)
-          if (!importData.version) {
-            throw new Error('Invalid settings file format');
-          }
+          // Import settings to localStorage
+          const settings = await SettingsManager.import(importData);
 
-          // Import widgets
-          if (importData.widgets) {
-            setWidgets(migrateWidgets(importData.widgets));
-          }
-
-          // Import background settings
-          if (importData.background) {
-            setBackground(importData.background);
-          }
-          if (importData.backgroundType) {
-            setBackgroundType(importData.backgroundType);
-          }
-          if (importData.customSolidColor) {
-            setCustomSolidColor(importData.customSolidColor);
-          }
-          if (importData.customGradientColors) {
-            setCustomGradientColors(importData.customGradientColors);
-          }
-          if (importData.customBackgroundImage) {
-            // Store the imported image
-            await storeImage('customBackgroundImage', importData.customBackgroundImage);
-            setCustomBackgroundImage(importData.customBackgroundImage);
-          } else {
-            setCustomBackgroundImage(null);
-            removeStoredImage('customBackgroundImage');
-          }
-          if (importData.backgroundBlur !== undefined) {
-            setBackgroundBlur(importData.backgroundBlur);
-          }
-          if (importData.backgroundOverlay !== undefined) {
-            setBackgroundOverlay(importData.backgroundOverlay);
-          }
-          if (importData.gridColumnsSmall !== undefined) {
-            setGridColumnsSmall(importData.gridColumnsSmall);
-          }
-          if (importData.gridColumnsMedium !== undefined) {
-            setGridColumnsMedium(importData.gridColumnsMedium);
-          }
-          if (importData.gridColumnsLarge !== undefined) {
-            setGridColumnsLarge(importData.gridColumnsLarge);
-          }
-          // Legacy support: if old gridColumns exists, use it for large
-          if (importData.gridColumns !== undefined && importData.gridColumnsLarge === undefined) {
-            setGridColumnsLarge(importData.gridColumns);
-          }
-
-          // Import links data
-          if (importData.linksData) {
-            Object.keys(importData.linksData).forEach(widgetId => {
-              const linkKey = `linkOrder-${widgetId}`;
-              localStorage.setItem(linkKey, JSON.stringify(importData.linksData[widgetId]));
-            });
-          }
-
-          // Import search provider
-          if (importData.searchProvider) {
-            localStorage.setItem('searchProvider', importData.searchProvider);
-          }
+          // Update React state with imported settings
+          if (settings.widgets !== undefined) setWidgets(settings.widgets);
+          if (settings.background !== undefined) setBackground(settings.background);
+          if (settings.backgroundType !== undefined) setBackgroundType(settings.backgroundType);
+          if (settings.customSolidColor !== undefined) setCustomSolidColor(settings.customSolidColor);
+          if (settings.customGradientColors !== undefined) setCustomGradientColors(settings.customGradientColors);
+          if (settings.customBackgroundImage !== undefined) setCustomBackgroundImage(settings.customBackgroundImage);
+          if (settings.backgroundBlur !== undefined) setBackgroundBlur(settings.backgroundBlur);
+          if (settings.backgroundOverlay !== undefined) setBackgroundOverlay(settings.backgroundOverlay);
+          if (settings.gridColumnsSmall !== undefined) setGridColumnsSmall(settings.gridColumnsSmall);
+          if (settings.gridColumnsMedium !== undefined) setGridColumnsMedium(settings.gridColumnsMedium);
+          if (settings.gridColumnsLarge !== undefined) setGridColumnsLarge(settings.gridColumnsLarge);
 
           resolve();
         } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { DownloadIcon, UploadIcon } from '../../assets/icons';
+import { DownloadIcon, UploadIcon } from 'assets/icons';
 
 export default function ResetSection({
   onExportSettings,

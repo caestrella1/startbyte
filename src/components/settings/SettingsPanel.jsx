@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { ImageIcon, GridIcon, RefreshIcon, ChevronLeftIcon, CloseIcon, ChevronRightIcon } from '../../assets/icons';
+import { ImageIcon, GridIcon, RefreshIcon, ChevronLeftIcon, CloseIcon, ChevronRightIcon } from 'assets/icons';
 
 const categories = [
   { id: 'background', label: 'Wallpaper', icon: <ImageIcon className="w-5 h-5" /> },

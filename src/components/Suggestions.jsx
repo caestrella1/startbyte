@@ -1,5 +1,5 @@
 import React from 'react';
-import Dropdown, { DropdownItem } from './ui/Dropdown';
+import Dropdown, { DropdownItem } from 'ui/Dropdown';
 
 export default function Suggestions({ suggestions, selectedIndex, onSelect }) {
   if (!suggestions.length) return null;

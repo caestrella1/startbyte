@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import SearchProviderPicker from '../SearchProviderPicker';
-import { searchProviders } from '../../utils/searchProviders';
-import Suggestions from '../Suggestions';
-import AlignmentPicker from '../ui/AlignmentPicker';
-import Switch from '../ui/Switch';
+import SearchProviderPicker from 'components/SearchProviderPicker';
+import { searchProviders } from 'utils/searchProviders';
+import Suggestions from 'components/Suggestions';
+import AlignmentPicker from 'ui/AlignmentPicker';
+import Switch from 'ui/Switch';
 
 export default function SearchBarWidget({ settings = {}, onSettingsChange }) {
   const [provider, setProvider] = useState(settings.provider || 'duckduckgo');

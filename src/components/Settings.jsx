@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import SettingsPanel from './settings/SettingsPanel';
-import SettingSection from './settings/SettingSection';
-import BackgroundSection from './settings/BackgroundSection';
-import GridSection from './settings/GridSection';
-import ResetSection from './settings/ResetSection';
+import SettingsPanel from 'components/settings/SettingsPanel';
+import SettingSection from 'components/settings/SettingSection';
+import BackgroundSection from 'components/settings/BackgroundSection';
+import GridSection from 'components/settings/GridSection';
+import ResetSection from 'components/settings/ResetSection';
 
 export default function Settings({ 
   isOpen, 

@@ -1,7 +1,7 @@
 import React from 'react';
-import { WeatherSettingsBase, useWeatherData } from './WeatherBase';
-import { getDayName, getWeatherIcon } from './weatherUtils';
-import { SpinnerIcon } from '../../../assets/icons';
+import { WeatherSettingsBase, useWeatherData } from 'widgets/weather/WeatherBase';
+import { getDayName, getWeatherIcon } from 'widgets/weather/weatherUtils';
+import { SpinnerIcon } from 'assets/icons';
 
 export default function WeatherWidget({ settings = {} }) {
   const mode = settings.forecastMode || 'today';

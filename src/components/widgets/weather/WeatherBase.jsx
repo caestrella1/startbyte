@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import AlignmentPicker from '../../ui/AlignmentPicker';
-import SegmentedControl from '../../ui/SegmentedControl';
-import Switch from '../../ui/Switch';
-import { fetchWeatherData } from './weatherUtils';
+import AlignmentPicker from 'ui/AlignmentPicker';
+import SegmentedControl from 'ui/SegmentedControl';
+import Switch from 'ui/Switch';
+import { fetchWeatherData } from 'widgets/weather/weatherUtils';
 
 export function useWeatherData({ settings = {}, forecastDays = 0 }) {
   const [weather, setWeather] = useState(null);

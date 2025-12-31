@@ -1,5 +1,5 @@
 import React from 'react';
-import SegmentedControl from '../ui/SegmentedControl';
+import SegmentedControl from 'ui/SegmentedControl';
 
 export default function GridSection({
   gridColumnsSmall,

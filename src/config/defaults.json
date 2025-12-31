@@ -53,23 +53,51 @@
       } 
     },
     { 
-      "id": "links-1", 
-      "type": "links", 
+      "id": "link-1", 
+      "type": "link", 
       "settings": { 
-        "styleType": "icon",
-        "width": 3,
+        "width": 1,
         "height": 1,
         "showBackground": true,
         "horizontalAlign": "center",
         "verticalAlign": "center",
-        "title": "",
-        "showTitle": false,
-        "defaultLinks": [
-          { "href": "https://www.google.com/", "label": "Google", "icon": "https://www.google.com/favicon.ico" },
-          { "href": "https://www.facebook.com/", "label": "Facebook", "icon": "https://www.facebook.com/favicon.ico" },
-          { "href": "https://www.x.com/", "label": "X", "icon": "https://www.x.com/favicon.ico" },
-          { "href": "https://www.reddit.com/", "label": "Reddit", "icon": "https://www.reddit.com/favicon.ico" }
-        ]
+        "link": { "href": "https://www.google.com/", "label": "Google", "icon": "https://www.google.com/favicon.ico" }
+      } 
+    },
+    { 
+      "id": "link-2", 
+      "type": "link", 
+      "settings": { 
+        "width": 1,
+        "height": 1,
+        "showBackground": true,
+        "horizontalAlign": "center",
+        "verticalAlign": "center",
+        "link": { "href": "https://www.facebook.com/", "label": "Facebook", "icon": "https://www.facebook.com/favicon.ico" }
+      } 
+    },
+    { 
+      "id": "link-3", 
+      "type": "link", 
+      "settings": { 
+        "width": 1,
+        "height": 1,
+        "showBackground": true,
+        "horizontalAlign": "center",
+        "verticalAlign": "center",
+        "link": { "href": "https://www.x.com/", "label": "X", "icon": "https://www.x.com/favicon.ico" }
+      } 
+    },
+    { 
+      "id": "link-4", 
+      "type": "link", 
+      "settings": { 
+        "width": 1,
+        "height": 1,
+        "showBackground": true,
+        "horizontalAlign": "center",
+        "verticalAlign": "center",
+        "link": { "href": "https://www.reddit.com/", "label": "Reddit", "icon": "https://www.reddit.com/favicon.ico" }
       } 
     }
   ],
